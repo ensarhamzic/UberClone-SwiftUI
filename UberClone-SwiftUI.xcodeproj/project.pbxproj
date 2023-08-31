@@ -43,6 +43,8 @@
 		F13590CA2A9B6D0C00E0E1A9 /* WebSocketViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F13590C92A9B6D0C00E0E1A9 /* WebSocketViewModel.swift */; };
 		F13590CC2A9B8DD500E0E1A9 /* DriverAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = F13590CB2A9B8DD500E0E1A9 /* DriverAnnotation.swift */; };
 		F13590D02A9E7AED00E0E1A9 /* UserType.swift in Sources */ = {isa = PBXBuildFile; fileRef = F13590CF2A9E7AED00E0E1A9 /* UserType.swift */; };
+		F13590D22AA1170C00E0E1A9 /* AcceptTripView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F13590D12AA1170B00E0E1A9 /* AcceptTripView.swift */; };
+		F13590D42AA11D2400E0E1A9 /* Trip.swift in Sources */ = {isa = PBXBuildFile; fileRef = F13590D32AA11D2400E0E1A9 /* Trip.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -83,6 +85,8 @@
 		F13590C92A9B6D0C00E0E1A9 /* WebSocketViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketViewModel.swift; sourceTree = "<group>"; };
 		F13590CB2A9B8DD500E0E1A9 /* DriverAnnotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriverAnnotation.swift; sourceTree = "<group>"; };
 		F13590CF2A9E7AED00E0E1A9 /* UserType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserType.swift; sourceTree = "<group>"; };
+		F13590D12AA1170B00E0E1A9 /* AcceptTripView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcceptTripView.swift; sourceTree = "<group>"; };
+		F13590D32AA11D2400E0E1A9 /* Trip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Trip.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -184,6 +188,7 @@
 				F13590A92A97A85D00E0E1A9 /* User.swift */,
 				F13590CB2A9B8DD500E0E1A9 /* DriverAnnotation.swift */,
 				F13590CF2A9E7AED00E0E1A9 /* UserType.swift */,
+				F13590D32AA11D2400E0E1A9 /* Trip.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -245,6 +250,7 @@
 			isa = PBXGroup;
 			children = (
 				F11C67EA2A96616400719C8A /* RideReqestView.swift */,
+				F13590D12AA1170B00E0E1A9 /* AcceptTripView.swift */,
 			);
 			path = Trips;
 			sourceTree = "<group>";
@@ -428,6 +434,8 @@
 				F11C67E82A96278F00719C8A /* MapViewState.swift in Sources */,
 				F13590C02A9A1ED200E0E1A9 /* SavedLocationRowView.swift in Sources */,
 				F13590B72A97DA9D00E0E1A9 /* SideMenuOptionViewModel.swift in Sources */,
+				F13590D22AA1170C00E0E1A9 /* AcceptTripView.swift in Sources */,
+				F13590D42AA11D2400E0E1A9 /* Trip.swift in Sources */,
 				F13590A52A97752100E0E1A9 /* AuthViewModel.swift in Sources */,
 				F13590C42A9A2D4400E0E1A9 /* SaveLocationMapView.swift in Sources */,
 				F13590CC2A9B8DD500E0E1A9 /* DriverAnnotation.swift in Sources */,
