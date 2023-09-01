@@ -13,48 +13,9 @@ struct RideRequestView: View {
     @State var selectedRideType: RideType = .uberX
     @EnvironmentObject var locationViewModel: LocationSearchViewModel
     
+    var rideRequestHandler: (_ rideType: RideType) -> Void
+    
     var body: some View {
-//        VStack {
-//            Capsule()
-//                .foregroundColor(Color(.systemGray5))
-//                .frame(width: 48, height: 6)
-//                .padding(8)
-//
-//            VStack(alignment: .leading, spacing: 24) {
-//                TripLocationsView()
-//                    .padding(.horizontal)
-//
-//                Divider()
-//
-//                Text("SUGGESTED RIDES")
-//                    .font(.subheadline)
-//                    .fontWeight(.semibold)
-//                    .padding(.leading)
-//                    .foregroundColor(Color(.darkGray))
-//
-//                rideTypeView
-//
-//                paymentTypeView
-//            }
-//
-//            Button {
-//                viewModel.requestRide(selectedRideType)
-//            } label: {
-//                Text("CONFIRM RIDE")
-//                    .fontWeight(.bold)
-//                    .frame(width: UIScreen.main.bounds.width - 32, height: 50)
-//                    .background(Color(.systemBlue))
-//                    .cornerRadius(10)
-//                    .foregroundColor(.white)
-//            }
-//
-//            Spacer()
-//        }
-//        .background(Color.theme.backgroundColor)
-//        .frame(height: 516)
-//        .clipShape(RoundedShape(corners: [.topLeft, .topRight]))
-//        .shadow(color: .black, radius: 10, x: 0, y: 0)
-        
         VStack {
             Capsule()
                 .fill(Color(.systemGray5))
@@ -182,7 +143,7 @@ struct RideRequestView: View {
             
             
             Button {
-                
+                rideRequestHandler(selectedRideType)
             } label: {
                 Text("CONFIRM RIDE")
                     .fontWeight(.bold)
@@ -198,11 +159,11 @@ struct RideRequestView: View {
     }
 }
 
-struct RideRequestView_Previews: PreviewProvider {
-    static var previews: some View {
-        RideRequestView()
-    }
-}
+//struct RideRequestView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        RideRequestView()
+//    }
+//}
 
 //extension RideRequestView {
 //    var rideTypeView: some View {

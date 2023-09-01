@@ -11,11 +11,25 @@ import MapKit
 struct UberMapViewRepresentable: UIViewRepresentable {
     let mapView = MKMapView()
     @Binding var mapState: MapViewState
+    @Binding var followingUser: Bool
+    @Binding var centerUser: (() -> Void)?
     @EnvironmentObject var locationViewModel: LocationSearchViewModel
     @EnvironmentObject var webSocketViewModel: WebSocketViewModel
     @EnvironmentObject var authViewModel: AuthViewModel
     
     var locationChosen: (_ coordinate: CLLocationCoordinate2D) -> Void
+    
+    
+    func centerOnUser(context: Context) -> () -> Void {
+        
+        func innerFunc() -> Void {
+            context.coordinator.centerOnUserLocation()
+        }
+    
+        
+        return innerFunc
+            
+    }
     
     func makeUIView(context: Context) -> some UIView {
         mapView.delegate = context.coordinator
@@ -23,8 +37,11 @@ struct UberMapViewRepresentable: UIViewRepresentable {
         mapView.showsUserLocation = true
         mapView.userTrackingMode = .follow
         
+        centerUser = self.centerOnUser(context: context)
+        
         return mapView
     }
+
     
     func updateUIView(_ uiView: UIViewType, context: Context) {
         switch mapState {
@@ -56,12 +73,13 @@ struct UberMapViewRepresentable: UIViewRepresentable {
 
 extension UberMapViewRepresentable {
     
-    class MapCoordinator: NSObject, MKMapViewDelegate {
+    class MapCoordinator: NSObject, MKMapViewDelegate, UIGestureRecognizerDelegate {
         
         // MARK: - Properties
         
         let parent: UberMapViewRepresentable
         var userLocationCoordinate: CLLocationCoordinate2D?
+    
         
         var currentRegion: MKCoordinateRegion?
         //        var userLocation: MKUserLocation?
@@ -77,6 +95,20 @@ extension UberMapViewRepresentable {
             
             let tapGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleTap))
             parent.mapView.addGestureRecognizer(tapGesture)
+            
+            let panGesture = UIPanGestureRecognizer(target: self, action: #selector(panGesture))
+            panGesture.delegate = self
+            parent.mapView.addGestureRecognizer(panGesture)
+        
+        }
+        
+        @objc func panGesture (sender: UIPanGestureRecognizer) {
+            if !parent.followingUser  { return }
+            parent.followingUser = false
+        }
+        
+        func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+            return true
         }
         
         @objc func handleTap(gestureReconizer: UITapGestureRecognizer) {
@@ -105,8 +137,12 @@ extension UberMapViewRepresentable {
         
         func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
             self.userLocationCoordinate = userLocation.coordinate
+            
             // this will cause mapview to constantly center if user is changing location
             //            self.userLocation = userLocation
+            
+            if !parent.followingUser { return }
+            
             let region = MKCoordinateRegion(
                 center: userLocation.coordinate,
                 span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
@@ -117,6 +153,18 @@ extension UberMapViewRepresentable {
             //                parent.homeViewModel.updateDriverLocation(withCoordinate: userLocation.coordinate)
             //            }
             
+            
+            
+            parent.mapView.setRegion(region, animated: true)
+            
+        }
+        
+        func centerOnUserLocation() {
+            let region = MKCoordinateRegion(
+                center: self.userLocationCoordinate!,
+                span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+            )
+            self.currentRegion = region
             parent.mapView.setRegion(region, animated: true)
         }
         
@@ -170,14 +218,14 @@ extension UberMapViewRepresentable {
             }
             parent.mapView.removeAnnotations(annotationsToRemove)
             parent.mapView.removeOverlays(parent.mapView.overlays)
-//            if let currentRegion = currentRegion {
-//                parent.mapView.setRegion(currentRegion, animated: true)
-//            }
+            //            if let currentRegion = currentRegion {
+            //                parent.mapView.setRegion(currentRegion, animated: true)
+            //            }
             // I removed this. This is centering to user location
         }
         
         func addDriversToMap(_ drivers: [LocationData]) {
-//            parent.mapView.removeAnnotations(parent.mapView.annotations)
+            //            parent.mapView.removeAnnotations(parent.mapView.annotations)
             let allDriverAnnotations = self.parent.mapView.annotations.filter { annotation in
                 if let anno = annotation as? DriverAnnotation {
                     return true
@@ -204,8 +252,8 @@ extension UberMapViewRepresentable {
                 self.parent.mapView.removeAnnotations(annotationsToRemove)
                 
                 let anno = DriverAnnotation(loc: driver.location, uid: driver.id)
-//                anno.subtitle = "driver-\(driver.id)"
-//                anno.coordinate = CLLocationCoordinate2D(latitude: driver.location.latitude, longitude: driver.location.longitude)
+                //                anno.subtitle = "driver-\(driver.id)"
+                //                anno.coordinate = CLLocationCoordinate2D(latitude: driver.location.latitude, longitude: driver.location.longitude)
                 self.parent.mapView.addAnnotation(anno)
             }
         }

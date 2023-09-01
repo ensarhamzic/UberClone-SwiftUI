@@ -16,6 +16,10 @@ struct HomeView: View {
     @EnvironmentObject var authViewModel: AuthViewModel
     @EnvironmentObject var webSocketViewModel: WebSocketViewModel
     
+    @State private var centerUser: (() -> Void)?
+    @State private var followingUser: Bool = true
+
+    
     var body: some View {
         Group {
             if authViewModel.userToken == nil {
@@ -47,6 +51,20 @@ struct HomeView: View {
         locationViewModel.selectCustomLocation(title: "Custom", location: coordinate!)
         mapState = .locationSelected
     }
+    
+    func handleRideRequest(_ rideType: RideType) {
+        print("Ride type")
+        print(rideType)
+        
+        print("DROP OFF LOCATION")
+        print(locationViewModel.selectedUberLocation)
+        
+        print("USER LOCATION")
+        print(LocationManager.shared.userLocation)
+        
+        print("PRICE")
+        print(locationViewModel.computeRidePrice(forType: rideType))
+    }
 }
 
 
@@ -54,8 +72,33 @@ extension HomeView {
     var mapView: some View {
         ZStack(alignment: .bottom) {
             ZStack(alignment: .top) {
-                UberMapViewRepresentable(mapState: $mapState, locationChosen: customLocationChosen(_:))
+                UberMapViewRepresentable(mapState: $mapState, followingUser: $followingUser, centerUser: $centerUser, locationChosen: customLocationChosen(_:))
                     .ignoresSafeArea()
+                
+                VStack {
+                    Spacer()
+                    
+                    HStack {
+                        Spacer()
+                        
+                        Button {
+                            followingUser = true
+                            centerUser!()
+                        } label: {
+                            Image(systemName: "location.north.circle")
+                                .resizable()
+                                .frame(width: 55, height: 55)
+                                .font(.title)
+                                .foregroundColor(Color.theme.primaryTextColor)
+                                .background(Color.theme.backgroundColor)
+                                .clipShape(Circle())
+                                .shadow(color: .black, radius: 6)
+                        }
+                        .padding()
+                        .opacity(followingUser ? 0.3 : 1)
+                        .disabled(followingUser)
+                    }
+                }
                 
                 if authViewModel.user?.type == .passenger {
                     if mapState == .searchingForLocation {
@@ -100,14 +143,14 @@ extension HomeView {
             }
             
             if mapState == .locationSelected || mapState == .polylineAdded {
-                RideRequestView()
+                RideRequestView(rideRequestHandler: handleRideRequest)
                     .transition(.move(edge: .bottom))
             }
         }
         .edgesIgnoringSafeArea(.bottom)
         .onReceive(LocationManager.shared.$userLocation) { location in
             if let location = location {
-                if locationViewModel.userLocation == nil {
+                if locationViewModel.userLocation?.latitude != location.latitude || locationViewModel.userLocation?.longitude != location.longitude {
                     locationViewModel.userLocation = location
                 }
                 authViewModel.userLocation = location
@@ -130,8 +173,8 @@ extension HomeView {
 }
 
 
-struct HomeView_Previews: PreviewProvider {
-    static var previews: some View {
-        HomeView()
-    }
-}
+//struct HomeView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        HomeView()
+//    }
+//}
