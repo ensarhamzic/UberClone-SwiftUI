@@ -10,12 +10,37 @@ import MapKit
 
 struct AcceptTripView: View {
     @State private var region: MKCoordinateRegion
+
+    let trip: Trip
+//    let route: MKRoute
+    let annotationItem: UberLocation
     
+    @Binding var route: MKRoute?
     
-    init() {
-        let center = CLLocationCoordinate2D(latitude: 37.3344, longitude: -122.0090)
+    init(trip: Trip, route: Binding<MKRoute?>) {
+        
+        let center = CLLocationCoordinate2D(latitude: trip.pickupLocation.latitude, longitude: trip.pickupLocation.longitude)
         let span = MKCoordinateSpan(latitudeDelta: 0.025, longitudeDelta: 0.025)
         self.region = MKCoordinateRegion(center: center, span: span)
+        self.trip = trip
+        self.annotationItem = UberLocation(title: "", coordinate: center)
+
+//        self.locationViewModel = locationViewModel
+        
+//        let fromLocation = LocationManager.shared.userLocation!
+//        let toLocation = CLLocationCoordinate2D(latitude: trip.pickupLocation.latitude, longitude: trip.pickupLocation.longitude)
+        
+        
+//        var rt: MKRoute?
+//        if rt == nil {
+//            self.locationViewModel.getDestinationRoute(from: fromLocation, to: toLocation) { route in
+//                print("Expected travel time \(route.expectedTravelTime / 60)")
+//                print("Distance from pass \(route.distance / 1000)")
+//
+//                rt = route
+//            }
+//        }
+        _route = route
     }
     
     
@@ -25,6 +50,7 @@ struct AcceptTripView: View {
                 .fill(Color(.systemGray5))
                 .frame(width: 48, height: 6)
                 .padding(.top, 8)
+        
             
             VStack {
                 HStack {
@@ -63,7 +89,7 @@ struct AcceptTripView: View {
                         .clipShape(Circle())
                     
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("ENSAR")
+                        Text(trip.passengerName)
                             .fontWeight(.bold)
                         
                         HStack {
@@ -82,7 +108,7 @@ struct AcceptTripView: View {
                     VStack(spacing: 6) {
                         Text("Earnings")
                         
-                        Text("$22.04")
+                        Text(trip.tripCost.toCurrency())
                             .font(.system(size: 24, weight: .semibold))
                     }
                 }
@@ -117,7 +143,9 @@ struct AcceptTripView: View {
                 }
                 .padding(.horizontal)
                 
-                Map(coordinateRegion: $region)
+                Map(coordinateRegion: $region, annotationItems: [annotationItem]) { item in
+                    MapMarker(coordinate: item.coordinate)
+                }
                     .frame(height: 220)
                     .cornerRadius(10)
                     .shadow(color: .black.opacity(0.6), radius: 10)
@@ -159,12 +187,19 @@ struct AcceptTripView: View {
             }
             .padding(.top)
             .padding(.horizontal)
+            .padding(.bottom, 25)
+        }
+        .background(Color.theme.backgroundColor)
+        .cornerRadius(16)
+        .shadow(color: Color.theme.secondaryBackgroundColor, radius: 20)
+        .onChange(of: route) { newValue in
+            print(newValue?.distance)
         }
     }
 }
-
-struct AcceptTripView_Previews: PreviewProvider {
-    static var previews: some View {
-        AcceptTripView()
-    }
-}
+//
+//struct AcceptTripView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        AcceptTripView(trip: Trip(id: "1", passengerName: "ENSAR", dropoffLocationName: "Hotel Vrbak", pickupLocation: Location(latitude: 20, longitude: 20), dropoffLocation: Location(latitude: 20.1, longitude: 20.1), tripCost: 22), route: <#MKRoute#>)
+//    }
+//}

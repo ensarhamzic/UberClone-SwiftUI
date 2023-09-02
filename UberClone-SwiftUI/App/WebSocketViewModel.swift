@@ -36,10 +36,11 @@ struct OfflineData: Codable {
 
 class WebSocketViewModel: ObservableObject {
     @Published var userLocations: [LocationData] = []
+    @Published var trip: Trip? = nil
     
     private var webSocketTask: URLSessionWebSocketTask?
     
-    func connect(userType: UserType, carType: RideType?) {
+    func connect(userType: UserType, carType: Int?) {
         var urlString = "\(Environments.webSocketURL)?type=\(userType)"
         if carType != nil {
             urlString = urlString + "&carType=\(carType!)"
@@ -65,7 +66,7 @@ class WebSocketViewModel: ObservableObject {
             case .success(let message):
                 switch message {
                 case .string(let jsonString):
-                    print(jsonString)
+//                    print(jsonString)
                     let jsonData = jsonString.data(using: .utf8)
                     
                     do {
@@ -98,6 +99,13 @@ class WebSocketViewModel: ObservableObject {
                                     return true
                                 }
                             }
+                        case "rideRequest":
+                            let dataToDecode = decodedMessage.data.data(using: .utf8)
+                            let decodedData = try JSONDecoder().decode(Trip.self, from: dataToDecode!)
+                            DispatchQueue.main.async {
+                                print(decodedData)
+                                self.trip = decodedData
+                            }
                         default:
                             break
                         }
@@ -117,7 +125,6 @@ class WebSocketViewModel: ObservableObject {
             case .failure(let error):
                 print("WebSocket error: \(error)")
             }
-            print("ENSAR")
             self.receiveMessage()
         }
     }

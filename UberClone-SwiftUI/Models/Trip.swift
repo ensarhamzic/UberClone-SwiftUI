@@ -7,20 +7,16 @@
 
 import Foundation
 
-struct Trip: Identifiable, Codable {
-    let id: String
+struct Trip: Codable, Identifiable, Equatable {
+    static func == (lhs: Trip, rhs: Trip) -> Bool {
+        return lhs.tripId == rhs.tripId
+    }
     
-    let passengerId: String
-    let driverId: String
+    let id = NSUUID().uuidString
+    let tripId: String
     let passengerName: String
-    let driverName: String
-    
-    let pickupLocationName: String
     let dropoffLocationName: String
-    let pickupLocationAddress: String // ne treba mi ja msm
-    
     let pickupLocation: Location
     let dropoffLocation: Location
-    
     let tripCost: Double
 }

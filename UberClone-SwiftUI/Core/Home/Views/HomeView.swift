@@ -7,6 +7,7 @@
 
 import SwiftUI
 import CoreLocation
+import MapKit
 
 struct HomeView: View {
     @State private var mapState = MapViewState.noInput
@@ -18,6 +19,8 @@ struct HomeView: View {
     
     @State private var centerUser: (() -> Void)?
     @State private var followingUser: Bool = true
+    
+    @State var routeToPassenger: MKRoute?
 
     
     var body: some View {
@@ -39,7 +42,7 @@ struct HomeView: View {
                     }
                 }
                 .onAppear {
-                    webSocketViewModel.connect(userType: user.type, carType: user.carType)
+                    webSocketViewModel.connect(userType: user.type, carType: user.carType?.id)
                 }
                 
             }
@@ -53,17 +56,24 @@ struct HomeView: View {
     }
     
     func handleRideRequest(_ rideType: RideType) {
-        print("Ride type")
-        print(rideType)
+        _ = authViewModel.sendRideRequest(pickupLocation: LocationManager.shared.userLocation!, dropoffLocation: locationViewModel.selectedUberLocation!, tripCost: locationViewModel.computeRidePrice(forType: rideType), rideType: rideType)
+    }
+    
+    func getDriverToPassengerRoute(trip: Trip) -> MKRoute? {
+        var routeToPass: MKRoute?
+        print("getting route")
         
-        print("DROP OFF LOCATION")
-        print(locationViewModel.selectedUberLocation)
+        let fromLocation = LocationManager.shared.userLocation!
+        let toLocation = CLLocationCoordinate2D(latitude: trip.pickupLocation.latitude, longitude: trip.pickupLocation.longitude)
         
-        print("USER LOCATION")
-        print(LocationManager.shared.userLocation)
-        
-        print("PRICE")
-        print(locationViewModel.computeRidePrice(forType: rideType))
+            locationViewModel.getDestinationRoute(from: fromLocation, to: toLocation) { route in
+                print("Expected travel time \(route.expectedTravelTime / 60)")
+                print("Distance from pass \(route.distance / 1000)")
+                routeToPass = route
+                self.routeToPassenger = route
+                
+            }
+        return routeToPass
     }
 }
 
@@ -146,6 +156,11 @@ extension HomeView {
                 RideRequestView(rideRequestHandler: handleRideRequest)
                     .transition(.move(edge: .bottom))
             }
+            
+            if let trip = webSocketViewModel.trip {
+                AcceptTripView(trip: trip, route: $routeToPassenger)
+                    .transition(.move(edge: .bottom))
+            }
         }
         .edgesIgnoringSafeArea(.bottom)
         .onReceive(LocationManager.shared.$userLocation) { location in
@@ -156,6 +171,12 @@ extension HomeView {
                 authViewModel.userLocation = location
             }
         }
+        .onReceive(webSocketViewModel.$trip, perform: { newTrip in
+            if newTrip != nil {
+                print(newTrip!.dropoffLocation)
+                getDriverToPassengerRoute(trip: newTrip!)
+            }
+        })
         .onAppear {
             // Create a repeating timer that fires every 5 seconds
             timer = Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { timer in
