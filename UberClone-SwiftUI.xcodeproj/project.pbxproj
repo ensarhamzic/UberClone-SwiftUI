@@ -45,6 +45,9 @@
 		F13590D02A9E7AED00E0E1A9 /* UserType.swift in Sources */ = {isa = PBXBuildFile; fileRef = F13590CF2A9E7AED00E0E1A9 /* UserType.swift */; };
 		F13590D22AA1170C00E0E1A9 /* AcceptTripView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F13590D12AA1170B00E0E1A9 /* AcceptTripView.swift */; };
 		F13590D42AA11D2400E0E1A9 /* Trip.swift in Sources */ = {isa = PBXBuildFile; fileRef = F13590D32AA11D2400E0E1A9 /* Trip.swift */; };
+		F13590D62AA4F54000E0E1A9 /* TripLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F13590D52AA4F53F00E0E1A9 /* TripLoadingView.swift */; };
+		F13590D82AA4F59900E0E1A9 /* TripAcceptedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F13590D72AA4F59900E0E1A9 /* TripAcceptedView.swift */; };
+		F13590DA2AA4F75E00E0E1A9 /* Spinner.swift in Sources */ = {isa = PBXBuildFile; fileRef = F13590D92AA4F75E00E0E1A9 /* Spinner.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -87,6 +90,9 @@
 		F13590CF2A9E7AED00E0E1A9 /* UserType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserType.swift; sourceTree = "<group>"; };
 		F13590D12AA1170B00E0E1A9 /* AcceptTripView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcceptTripView.swift; sourceTree = "<group>"; };
 		F13590D32AA11D2400E0E1A9 /* Trip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Trip.swift; sourceTree = "<group>"; };
+		F13590D52AA4F53F00E0E1A9 /* TripLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripLoadingView.swift; sourceTree = "<group>"; };
+		F13590D72AA4F59900E0E1A9 /* TripAcceptedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripAcceptedView.swift; sourceTree = "<group>"; };
+		F13590D92AA4F75E00E0E1A9 /* Spinner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spinner.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -251,6 +257,8 @@
 			children = (
 				F11C67EA2A96616400719C8A /* RideReqestView.swift */,
 				F13590D12AA1170B00E0E1A9 /* AcceptTripView.swift */,
+				F13590D52AA4F53F00E0E1A9 /* TripLoadingView.swift */,
+				F13590D72AA4F59900E0E1A9 /* TripAcceptedView.swift */,
 			);
 			path = Trips;
 			sourceTree = "<group>";
@@ -289,6 +297,7 @@
 				F13590C12A9A1F8800E0E1A9 /* SettingsRowView.swift */,
 				F13590C32A9A2D4400E0E1A9 /* SaveLocationMapView.swift */,
 				F13590C72A9A81FD00E0E1A9 /* LocationShortcutView.swift */,
+				F13590D92AA4F75E00E0E1A9 /* Spinner.swift */,
 			);
 			path = ReusableItems;
 			sourceTree = "<group>";
@@ -425,7 +434,9 @@
 			files = (
 				F13590B32A97D77300E0E1A9 /* SideMenuView.swift in Sources */,
 				F13590C62A9A2E9D00E0E1A9 /* SaveLocationMapViewRepresentable.swift in Sources */,
+				F13590D82AA4F59900E0E1A9 /* TripAcceptedView.swift in Sources */,
 				F11C67E62A960BB300719C8A /* LocationSearchViewModel.swift in Sources */,
+				F13590DA2AA4F75E00E0E1A9 /* Spinner.swift in Sources */,
 				F11C67E22A96040F00719C8A /* LocationSearchView.swift in Sources */,
 				F11C67D42A95FA2800719C8A /* LocationManager.swift in Sources */,
 				F11C67EB2A96616400719C8A /* RideReqestView.swift in Sources */,
@@ -453,6 +464,7 @@
 				F13590C22A9A1F8800E0E1A9 /* SettingsRowView.swift in Sources */,
 				F11C67F82A97653A00719C8A /* LoginView.swift in Sources */,
 				F13590AE2A97B88700E0E1A9 /* Converters.swift in Sources */,
+				F13590D62AA4F54000E0E1A9 /* TripLoadingView.swift in Sources */,
 				F13590B92A97DAE100E0E1A9 /* SideMenuOptionView.swift in Sources */,
 				F11C67FD2A976CB500719C8A /* CustomInputField.swift in Sources */,
 				F11C67ED2A9675DB00719C8A /* RideType.swift in Sources */,

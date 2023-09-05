@@ -9,38 +9,22 @@ import SwiftUI
 import MapKit
 
 struct AcceptTripView: View {
+    let webSocketViewModel: WebSocketViewModel
+    
     @State private var region: MKCoordinateRegion
-
-    let trip: Trip
 //    let route: MKRoute
-    let annotationItem: UberLocation
+    @State private var annotationItem: UberLocation
     
     @Binding var route: MKRoute?
     
-    init(trip: Trip, route: Binding<MKRoute?>) {
-        
-        let center = CLLocationCoordinate2D(latitude: trip.pickupLocation.latitude, longitude: trip.pickupLocation.longitude)
+    init(route: Binding<MKRoute?>, wsViewModel: WebSocketViewModel) {
+        _route = route
+        self.region = MKCoordinateRegion()
+        self.webSocketViewModel = wsViewModel
+        let center = CLLocationCoordinate2D(latitude: webSocketViewModel.trip!.pickupLocation.latitude, longitude: webSocketViewModel.trip!.pickupLocation.longitude)
         let span = MKCoordinateSpan(latitudeDelta: 0.025, longitudeDelta: 0.025)
         self.region = MKCoordinateRegion(center: center, span: span)
-        self.trip = trip
         self.annotationItem = UberLocation(title: "", coordinate: center)
-
-//        self.locationViewModel = locationViewModel
-        
-//        let fromLocation = LocationManager.shared.userLocation!
-//        let toLocation = CLLocationCoordinate2D(latitude: trip.pickupLocation.latitude, longitude: trip.pickupLocation.longitude)
-        
-        
-//        var rt: MKRoute?
-//        if rt == nil {
-//            self.locationViewModel.getDestinationRoute(from: fromLocation, to: toLocation) { route in
-//                print("Expected travel time \(route.expectedTravelTime / 60)")
-//                print("Distance from pass \(route.distance / 1000)")
-//
-//                rt = route
-//            }
-//        }
-        _route = route
     }
     
     
@@ -50,7 +34,6 @@ struct AcceptTripView: View {
                 .fill(Color(.systemGray5))
                 .frame(width: 48, height: 6)
                 .padding(.top, 8)
-        
             
             VStack {
                 HStack {
@@ -64,7 +47,7 @@ struct AcceptTripView: View {
                     Spacer()
                     
                     VStack {
-                        Text("10")
+                        Text(route != nil ? String(Int(route!.expectedTravelTime / 60)) : "0")
                             .bold()
                         
                         Text("min")
@@ -89,7 +72,7 @@ struct AcceptTripView: View {
                         .clipShape(Circle())
                     
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(trip.passengerName)
+                        Text(webSocketViewModel.trip?.passengerName ?? "")
                             .fontWeight(.bold)
                         
                         HStack {
@@ -108,7 +91,7 @@ struct AcceptTripView: View {
                     VStack(spacing: 6) {
                         Text("Earnings")
                         
-                        Text(trip.tripCost.toCurrency())
+                        Text(webSocketViewModel.trip?.tripCost.toCurrency() ?? "$0.00")
                             .font(.system(size: 24, weight: .semibold))
                     }
                 }
@@ -132,11 +115,11 @@ struct AcceptTripView: View {
                     Spacer()
                     
                     VStack {
-                        Text("5.2")
+                        Text(route != nil ? route!.distance.distanceInKilometersString() : "0.00")
                             .font(.headline)
                             .fontWeight(.semibold)
                         
-                        Text("mi")
+                        Text("km")
                             .font(.subheadline)
                             .foregroundColor(.gray)
                     }
@@ -158,7 +141,8 @@ struct AcceptTripView: View {
             
             HStack {
                 Button {
-                    
+                    route = nil
+                    webSocketViewModel.trip = nil
                 } label: {
                     Text("Reject")
                         .font(.headline)
@@ -192,9 +176,6 @@ struct AcceptTripView: View {
         .background(Color.theme.backgroundColor)
         .cornerRadius(16)
         .shadow(color: Color.theme.secondaryBackgroundColor, radius: 20)
-        .onChange(of: route) { newValue in
-            print(newValue?.distance)
-        }
     }
 }
 //

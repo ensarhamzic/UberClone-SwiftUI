@@ -14,7 +14,7 @@ struct Trip: Codable, Identifiable, Equatable {
     
     let id = NSUUID().uuidString
     let tripId: String
-    let passengerName: String
+    var passengerName: String
     let dropoffLocationName: String
     let pickupLocation: Location
     let dropoffLocation: Location

@@ -334,4 +334,52 @@ class AuthViewModel: ObservableObject {
         sem.wait()
         return result
     }
+    
+    
+    func cancelRideRequest() -> Any {
+        print("slanje requesta")
+        var result: Any = ""
+        
+        // URL zahteva
+        guard let url = URL(string: Environments.apiBaseURL + "/users/cancelRideRequest") else {
+            return result
+        }
+    
+        
+        // Podaci koje šaljemo
+        // no data
+        
+        // Kreiranje zahteva
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue(userToken, forHTTPHeaderField: "Authorization")
+        
+        // Slanje zahteva
+        let sem = DispatchSemaphore.init(value: 0)
+        let session = URLSession.shared
+        let task = session.dataTask(with: request) { data, response, error in
+            defer { sem.signal()}
+            if let error = error {
+                print("Greška pri slanju zahteva: \(error)")
+                return
+            }
+            
+            if let data = data {
+                do {
+                    // Obrada odgovora
+                    if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+                        print(json)
+                        result = json
+                    }
+                } catch {
+                    print("Greška pri obradi odgovora: \(error)")
+                }
+            }
+        }
+        task.resume()
+        
+        sem.wait()
+        return result
+    }
 }

@@ -12,8 +12,8 @@ struct MapViewActionButton: View {
     @Binding var mapState: MapViewState
     @Binding var showSideMenu: Bool
     @EnvironmentObject var viewModel: LocationSearchViewModel
+    @EnvironmentObject var authViewModel: AuthViewModel
     
-        
     var body: some View {
 //        HStack {
 //            Button {
@@ -93,6 +93,10 @@ struct MapViewActionButton: View {
             case .locationSelected, .polylineAdded:
                 mapState = .noInput
                 viewModel.selectedUberLocation = nil
+            case .tripRequested:
+                mapState = .noInput
+                viewModel.selectedUberLocation = nil
+                let _ = authViewModel.cancelRideRequest()
             default: break
             }
         }

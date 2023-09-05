@@ -33,6 +33,10 @@ struct OfflineData: Codable {
     let userId: String
 }
 
+struct RideRequestCancelledData: Codable {
+    let tripId: String
+}
+
 
 class WebSocketViewModel: ObservableObject {
     @Published var userLocations: [LocationData] = []
@@ -40,8 +44,8 @@ class WebSocketViewModel: ObservableObject {
     
     private var webSocketTask: URLSessionWebSocketTask?
     
-    func connect(userType: UserType, carType: Int?) {
-        var urlString = "\(Environments.webSocketURL)?type=\(userType)"
+    func connect(userId: String, userType: UserType, carType: Int?) {
+        var urlString = "\(Environments.webSocketURL)?type=\(userType)&userId=\(userId)"
         if carType != nil {
             urlString = urlString + "&carType=\(carType!)"
         }
@@ -106,10 +110,18 @@ class WebSocketViewModel: ObservableObject {
                                 print(decodedData)
                                 self.trip = decodedData
                             }
+                        case "rideRequestCancelled":
+                            let dataToDecode = decodedMessage.data.data(using: .utf8)
+                            let decodedData = try JSONDecoder().decode(RideRequestCancelledData.self, from: dataToDecode!)
+                            DispatchQueue.main.async {
+                                guard let tripId = self.trip?.tripId else {return}
+                                if tripId == decodedData.tripId {
+                                    self.trip = nil
+                                }
+                            }
                         default:
                             break
                         }
-                        
                         
                     } catch {
                         print("Error decoding JSON:", error)

@@ -42,7 +42,7 @@ struct HomeView: View {
                     }
                 }
                 .onAppear {
-                    webSocketViewModel.connect(userType: user.type, carType: user.carType?.id)
+                    webSocketViewModel.connect(userId: user.id, userType: user.type, carType: user.carType?.id)
                 }
                 
             }
@@ -57,6 +57,7 @@ struct HomeView: View {
     
     func handleRideRequest(_ rideType: RideType) {
         _ = authViewModel.sendRideRequest(pickupLocation: LocationManager.shared.userLocation!, dropoffLocation: locationViewModel.selectedUberLocation!, tripCost: locationViewModel.computeRidePrice(forType: rideType), rideType: rideType)
+        mapState = .tripRequested
     }
     
     func getDriverToPassengerRoute(trip: Trip) -> MKRoute? {
@@ -158,7 +159,12 @@ extension HomeView {
             }
             
             if let trip = webSocketViewModel.trip {
-                AcceptTripView(trip: trip, route: $routeToPassenger)
+                AcceptTripView(route: $routeToPassenger, wsViewModel: webSocketViewModel)
+                    .transition(.move(edge: .bottom))
+            }
+            
+            if mapState == .tripRequested {
+                TripLoadingView()
                     .transition(.move(edge: .bottom))
             }
         }
@@ -173,7 +179,6 @@ extension HomeView {
         }
         .onReceive(webSocketViewModel.$trip, perform: { newTrip in
             if newTrip != nil {
-                print(newTrip!.dropoffLocation)
                 getDriverToPassengerRoute(trip: newTrip!)
             }
         })
