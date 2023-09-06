@@ -9,7 +9,7 @@ import SwiftUI
 
 struct LocationSearchView: View {
     @State private var startLocationText = ""
-    @Binding var mapState: MapViewState
+    @ObservedObject var appState = AppState.shared
     @EnvironmentObject var viewModel: LocationSearchViewModel
     
     var body: some View {
@@ -39,6 +39,7 @@ struct LocationSearchView: View {
                             )
                         )
                         .padding(.trailing)
+                        .disabled(true)
                     
                     TextField("Where to?", text: $viewModel.queryFragment)
                         .frame(height: 32)
@@ -66,7 +67,9 @@ struct LocationSearchView: View {
                             .onTapGesture {
                                 withAnimation(.spring()) {
                                     viewModel.selectLocation(result)
-                                    mapState = .locationSelected
+                                    DispatchQueue.main.async {
+                                        appState.mapState = .locationSelected
+                                    }
                                 }
                             }
                     }
@@ -80,6 +83,6 @@ struct LocationSearchView: View {
 
 struct LocationSearchView_Previews: PreviewProvider {
     static var previews: some View {
-        LocationSearchView(mapState: .constant(.searchingForLocation))
+        LocationSearchView()
     }
 }

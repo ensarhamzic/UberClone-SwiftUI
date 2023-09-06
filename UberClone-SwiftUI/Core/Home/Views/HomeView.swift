@@ -10,7 +10,7 @@ import CoreLocation
 import MapKit
 
 struct HomeView: View {
-    @State var mapState: MapViewState = .noInput
+    @ObservedObject var appState = AppState.shared
     @State private var showSideMenu = false
     @State private var timer: Timer?
     @EnvironmentObject var locationViewModel: LocationSearchViewModel
@@ -50,14 +50,19 @@ struct HomeView: View {
     }
     
     func customLocationChosen(_ coordinate: CLLocationCoordinate2D?) {
-        if mapState != .noInput { return }
+        if appState.mapState != .noInput { return }
         locationViewModel.selectCustomLocation(title: "Custom", location: coordinate!)
-        mapState = .locationSelected
+        
+        DispatchQueue.main.async {
+            appState.mapState = .locationSelected
+        }
     }
     
     func handleRideRequest(_ rideType: RideType) {
         _ = authViewModel.sendRideRequest(pickupLocation: LocationManager.shared.userLocation!, dropoffLocation: locationViewModel.selectedUberLocation!, tripCost: locationViewModel.computeRidePrice(forType: rideType), rideType: rideType)
-        mapState = .tripRequested
+        DispatchQueue.main.async {
+            appState.mapState = .tripRequested
+        }
     }
     
     func getDriverToPassengerRoute(trip: Trip) -> MKRoute? {
@@ -83,7 +88,7 @@ extension HomeView {
     var mapView: some View {
         ZStack(alignment: .bottom) {
             ZStack(alignment: .top) {
-                UberMapViewRepresentable(mapState: $mapState, followingUser: $followingUser, centerUser: $centerUser, locationChosen: customLocationChosen(_:))
+                UberMapViewRepresentable(followingUser: $followingUser, centerUser: $centerUser, locationChosen: customLocationChosen(_:))
                     .ignoresSafeArea()
                 
                 VStack {
@@ -112,13 +117,15 @@ extension HomeView {
                 }
                 
                 if authViewModel.user?.type == .passenger {
-                    if mapState == .searchingForLocation {
-                        LocationSearchView(mapState: $mapState)
-                    } else if mapState == .noInput {
+                    if appState.mapState == .searchingForLocation {
+                        LocationSearchView()
+                    } else if appState.mapState == .noInput {
                         LocationSearchActivationView()
                             .onTapGesture {
                                 withAnimation(.spring()) {
-                                    mapState = .searchingForLocation
+                                    DispatchQueue.main.async {
+                                        appState.mapState = .searchingForLocation
+                                    }
                                 }
                             }
                             .shadow(color: .black, radius: 6)
@@ -129,7 +136,10 @@ extension HomeView {
                                     .onTapGesture {
                                         withAnimation(.spring()) {
                                             locationViewModel.selectSavedLocation(title: "Home", location: authViewModel.user?.home)
-                                            mapState = .locationSelected
+                                            DispatchQueue.main.async {
+                                                appState.mapState = .locationSelected
+                                            }
+                 
                                         }
                                     }
                             }
@@ -138,7 +148,9 @@ extension HomeView {
                                     .onTapGesture {
                                         withAnimation(.spring()) {
                                             locationViewModel.selectSavedLocation(title: "Work", location: authViewModel.user?.work)
-                                            mapState = .locationSelected
+                                            DispatchQueue.main.async {
+                                                appState.mapState = .locationSelected
+                                            }
                                         }
                                     }
                             }
@@ -148,22 +160,22 @@ extension HomeView {
                     }
                 }
                 
-                MapViewActionButton(mapState: $mapState, showSideMenu: $showSideMenu)
+                MapViewActionButton(showSideMenu: $showSideMenu)
                     .padding(.leading)
                     .padding(.top, 4)
             }
             
-            if mapState == .locationSelected || mapState == .polylineAdded {
+            if appState.mapState == .locationSelected || appState.mapState == .polylineAdded {
                 RideRequestView(rideRequestHandler: handleRideRequest)
                     .transition(.move(edge: .bottom))
             }
             
             if let trip = webSocketViewModel.trip {
-                AcceptTripView(mapState: $mapState, route: $routeToPassenger, wsViewModel: webSocketViewModel, authViewModel: authViewModel)
+                AcceptTripView(route: $routeToPassenger, wsViewModel: webSocketViewModel, authViewModel: authViewModel)
                     .transition(.move(edge: .bottom))
             }
             
-            if mapState == .tripRequested {
+            if appState.mapState == .tripRequested {
                 TripLoadingView()
                     .transition(.move(edge: .bottom))
             }

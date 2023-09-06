@@ -10,7 +10,7 @@ import MapKit
 
 struct UberMapViewRepresentable: UIViewRepresentable {
     let mapView = MKMapView()
-    @Binding var mapState: MapViewState
+    @ObservedObject var appState = AppState.shared
     @Binding var followingUser: Bool
     @Binding var centerUser: (() -> Void)?
     @EnvironmentObject var locationViewModel: LocationSearchViewModel
@@ -44,7 +44,7 @@ struct UberMapViewRepresentable: UIViewRepresentable {
 
     
     func updateUIView(_ uiView: UIViewType, context: Context) {
-        switch mapState {
+        switch appState.mapState {
         case .noInput:
             context.coordinator.clearMapViewAndRecenterOnUserLocation()
             if authViewModel.user?.type == .passenger {
@@ -172,7 +172,9 @@ extension UberMapViewRepresentable {
             guard let userLocationCoordinate = self.userLocationCoordinate else {return }
             parent.locationViewModel.getDestinationRoute(from: userLocationCoordinate, to: coordinate) { route in
                 self.parent.mapView.addOverlay(route.polyline)
-                self.parent.mapState = .polylineAdded
+                DispatchQueue.main.async {
+                    self.parent.appState.mapState = .polylineAdded
+                }
                 let rect = self.parent.mapView.mapRectThatFits(route.polyline.boundingMapRect, edgePadding: .init(top: 64, left: 32, bottom: 500, right: 32))
                 
                 self.parent.mapView.setRegion(MKCoordinateRegion(rect), animated: true)

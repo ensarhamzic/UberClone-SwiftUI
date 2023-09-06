@@ -41,17 +41,9 @@ struct RideRequestCancelledData: Codable {
 class WebSocketViewModel: ObservableObject {
     @Published var userLocations: [LocationData] = []
     @Published var trip: Trip? = nil
-    @Binding var mapState: MapViewState
+    @ObservedObject var appState = AppState.shared
     
     private var webSocketTask: URLSessionWebSocketTask?
-    
-    init(mapState: Binding<MapViewState> = Binding.constant(.noInput)) {
-        self._mapState = mapState
-    }
-    
-    func setMapBinding(mapState: Binding<MapViewState>) {
-        self._mapState = mapState
-    }
     
     func connect(userId: String, userType: UserType, carType: Int?) {
         var urlString = "\(Environments.webSocketURL)?type=\(userType)&userId=\(userId)"
@@ -130,8 +122,9 @@ class WebSocketViewModel: ObservableObject {
                             }
                         case "rideAccepted":
                             print("RIDE ACCEPTED")
-                            print(self.mapState)
-                            self.mapState = .noInput
+                            DispatchQueue.main.async {
+                                self.appState.mapState = .noInput
+                            }
                             print("updated")
 //                            let dataToDecode = decodedMessage.data.data(using: .utf8)
 //                            let decodedData = try JSONDecoder().decode(RideRequestCancelledData.self, from: dataToDecode!)

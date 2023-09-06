@@ -9,7 +9,7 @@ import SwiftUI
 
 struct MapViewActionButton: View {
 //    @Binding var state: MapViewState
-    @Binding var mapState: MapViewState
+    @ObservedObject var appState = AppState.shared
     @Binding var showSideMenu: Bool
     @EnvironmentObject var viewModel: LocationSearchViewModel
     @EnvironmentObject var authViewModel: AuthViewModel
@@ -36,10 +36,10 @@ struct MapViewActionButton: View {
 //        }
         Button {
             withAnimation(.spring()) {
-                actionForState(mapState)
+                actionForState(appState.mapState)
             }
         } label: {
-            Image(systemName: imageNameForState(state: mapState))
+            Image(systemName: imageNameForState(state: appState.mapState))
                 .imageScale(.small)
                 .font(.title)
                 .foregroundColor(Color.theme.primaryTextColor)
@@ -89,12 +89,18 @@ struct MapViewActionButton: View {
             case .noInput:
                 showSideMenu.toggle()
             case .searchingForLocation:
-                mapState = .noInput
+                DispatchQueue.main.async {
+                    appState.mapState = .noInput
+                }
             case .locationSelected, .polylineAdded:
-                mapState = .noInput
+                DispatchQueue.main.async {
+                    appState.mapState = .noInput
+                }
                 viewModel.selectedUberLocation = nil
             case .tripRequested:
-                mapState = .noInput
+                DispatchQueue.main.async {
+                    appState.mapState = .noInput
+                }
                 viewModel.selectedUberLocation = nil
                 let _ = authViewModel.cancelRideRequest()
             default: break
@@ -104,6 +110,6 @@ struct MapViewActionButton: View {
 
 struct MapViewActionButton_Previews: PreviewProvider {
     static var previews: some View {
-        MapViewActionButton(mapState: .constant(.noInput), showSideMenu: .constant(false))
+        MapViewActionButton(showSideMenu: .constant(false))
     }
 }

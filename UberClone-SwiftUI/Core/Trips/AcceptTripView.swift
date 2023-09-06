@@ -17,11 +17,11 @@ struct AcceptTripView: View {
     @State private var annotationItem: UberLocation
     
     @Binding var route: MKRoute?
-    @Binding var mapState: MapViewState
     
-    init(mapState: Binding<MapViewState>, route: Binding<MKRoute?>, wsViewModel: WebSocketViewModel, authViewModel: AuthViewModel) {
+    @ObservedObject var appState = AppState.shared
+    
+    init(route: Binding<MKRoute?>, wsViewModel: WebSocketViewModel, authViewModel: AuthViewModel) {
         _route = route
-        _mapState = mapState
         self.region = MKCoordinateRegion()
         self.webSocketViewModel = wsViewModel
         self.authViewModel = authViewModel
