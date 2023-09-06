@@ -10,17 +10,21 @@ import MapKit
 
 struct AcceptTripView: View {
     let webSocketViewModel: WebSocketViewModel
+    let authViewModel: AuthViewModel
     
     @State private var region: MKCoordinateRegion
 //    let route: MKRoute
     @State private var annotationItem: UberLocation
     
     @Binding var route: MKRoute?
+    @Binding var mapState: MapViewState
     
-    init(route: Binding<MKRoute?>, wsViewModel: WebSocketViewModel) {
+    init(mapState: Binding<MapViewState>, route: Binding<MKRoute?>, wsViewModel: WebSocketViewModel, authViewModel: AuthViewModel) {
         _route = route
+        _mapState = mapState
         self.region = MKCoordinateRegion()
         self.webSocketViewModel = wsViewModel
+        self.authViewModel = authViewModel
         let center = CLLocationCoordinate2D(latitude: webSocketViewModel.trip!.pickupLocation.latitude, longitude: webSocketViewModel.trip!.pickupLocation.longitude)
         let span = MKCoordinateSpan(latitudeDelta: 0.025, longitudeDelta: 0.025)
         self.region = MKCoordinateRegion(center: center, span: span)
@@ -157,7 +161,8 @@ struct AcceptTripView: View {
                 Spacer()
                 
                 Button {
-                    
+                    guard let tripId = webSocketViewModel.trip?.tripId else { return }
+                    let _ = authViewModel.acceptRide(tripId: tripId)
                 } label: {
                     Text("Accept")
                         .font(.headline)

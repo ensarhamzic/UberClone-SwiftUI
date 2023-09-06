@@ -48,6 +48,7 @@
 		F13590D62AA4F54000E0E1A9 /* TripLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F13590D52AA4F53F00E0E1A9 /* TripLoadingView.swift */; };
 		F13590D82AA4F59900E0E1A9 /* TripAcceptedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F13590D72AA4F59900E0E1A9 /* TripAcceptedView.swift */; };
 		F13590DA2AA4F75E00E0E1A9 /* Spinner.swift in Sources */ = {isa = PBXBuildFile; fileRef = F13590D92AA4F75E00E0E1A9 /* Spinner.swift */; };
+		F13590DF2AA8ACD000E0E1A9 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = F13590DE2AA8ACD000E0E1A9 /* AppState.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -93,6 +94,7 @@
 		F13590D52AA4F53F00E0E1A9 /* TripLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripLoadingView.swift; sourceTree = "<group>"; };
 		F13590D72AA4F59900E0E1A9 /* TripAcceptedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripAcceptedView.swift; sourceTree = "<group>"; };
 		F13590D92AA4F75E00E0E1A9 /* Spinner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spinner.swift; sourceTree = "<group>"; };
+		F13590DE2AA8ACD000E0E1A9 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -151,6 +153,7 @@
 			children = (
 				F11C67BA2A95F7B300719C8A /* UberClone_SwiftUIApp.swift */,
 				F13590C92A9B6D0C00E0E1A9 /* WebSocketViewModel.swift */,
+				F13590DE2AA8ACD000E0E1A9 /* AppState.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -443,6 +446,7 @@
 				F13590CA2A9B6D0C00E0E1A9 /* WebSocketViewModel.swift in Sources */,
 				F11C67EF2A967EE200719C8A /* Double.swift in Sources */,
 				F11C67E82A96278F00719C8A /* MapViewState.swift in Sources */,
+				F13590DF2AA8ACD000E0E1A9 /* AppState.swift in Sources */,
 				F13590C02A9A1ED200E0E1A9 /* SavedLocationRowView.swift in Sources */,
 				F13590B72A97DA9D00E0E1A9 /* SideMenuOptionViewModel.swift in Sources */,
 				F13590D22AA1170C00E0E1A9 /* AcceptTripView.swift in Sources */,

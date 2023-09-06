@@ -337,7 +337,6 @@ class AuthViewModel: ObservableObject {
     
     
     func cancelRideRequest() -> Any {
-        print("slanje requesta")
         var result: Any = ""
         
         // URL zahteva
@@ -354,6 +353,61 @@ class AuthViewModel: ObservableObject {
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue(userToken, forHTTPHeaderField: "Authorization")
+        
+        // Slanje zahteva
+        let sem = DispatchSemaphore.init(value: 0)
+        let session = URLSession.shared
+        let task = session.dataTask(with: request) { data, response, error in
+            defer { sem.signal()}
+            if let error = error {
+                print("Greška pri slanju zahteva: \(error)")
+                return
+            }
+            
+            if let data = data {
+                do {
+                    // Obrada odgovora
+                    if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+                        print(json)
+                        result = json
+                    }
+                } catch {
+                    print("Greška pri obradi odgovora: \(error)")
+                }
+            }
+        }
+        task.resume()
+        
+        sem.wait()
+        return result
+    }
+    
+    func acceptRide(tripId: String) -> Any {
+        var result: Any = ""
+        
+        // URL zahteva
+        guard let url = URL(string: Environments.apiBaseURL + "/users/acceptRide") else {
+            return result
+        }
+        
+        // Podaci koje šaljemo
+        let params: [String: Any] = [
+            "tripId": tripId
+        ]
+        
+        // Kreiranje zahteva
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue(userToken, forHTTPHeaderField: "Authorization")
+        
+        // Pretvaranje podataka u JSON format
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: params, options: [])
+        } catch {
+            print("Greška pri pretvaranju u JSON format: \(error)")
+            return result
+        }
         
         // Slanje zahteva
         let sem = DispatchSemaphore.init(value: 0)

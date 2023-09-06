@@ -12,6 +12,7 @@ struct UberClone_SwiftUIApp: App {
     @StateObject var locationViewModel = LocationSearchViewModel()
     @StateObject var authViewModel = AuthViewModel()
     @StateObject var webSocketViewModel = WebSocketViewModel()
+    
     @Environment(\.scenePhase) var scenePhase
     
     init() {
@@ -28,6 +29,7 @@ struct UberClone_SwiftUIApp: App {
             }
             authViewModel.signOut()
         }
+    
     }
     
     

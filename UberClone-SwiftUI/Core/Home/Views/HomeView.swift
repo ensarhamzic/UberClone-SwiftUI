@@ -10,7 +10,7 @@ import CoreLocation
 import MapKit
 
 struct HomeView: View {
-    @State private var mapState = MapViewState.noInput
+    @State var mapState: MapViewState = .noInput
     @State private var showSideMenu = false
     @State private var timer: Timer?
     @EnvironmentObject var locationViewModel: LocationSearchViewModel
@@ -159,7 +159,7 @@ extension HomeView {
             }
             
             if let trip = webSocketViewModel.trip {
-                AcceptTripView(route: $routeToPassenger, wsViewModel: webSocketViewModel)
+                AcceptTripView(mapState: $mapState, route: $routeToPassenger, wsViewModel: webSocketViewModel, authViewModel: authViewModel)
                     .transition(.move(edge: .bottom))
             }
             
