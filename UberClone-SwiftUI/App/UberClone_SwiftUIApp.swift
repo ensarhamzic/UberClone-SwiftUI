@@ -18,6 +18,7 @@ struct UberClone_SwiftUIApp: App {
     init() {
         let token = UserDefaults.standard.string(forKey: "token")
         if(token == nil) { return }
+        
         let result = authViewModel.verifyToken(token: token!) as! [String: Any]
         if result["success"] is String {
             let user = result["user"] as! [String: Any]

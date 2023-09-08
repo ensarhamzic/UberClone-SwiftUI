@@ -137,8 +137,7 @@ struct AcceptTripView: View {
                     .cornerRadius(10)
                     .shadow(color: .black.opacity(0.6), radius: 10)
                     .padding()
-                
-                
+        
                 Divider()
                 
             }
@@ -163,6 +162,7 @@ struct AcceptTripView: View {
                 Button {
                     guard let tripId = webSocketViewModel.trip?.tripId else { return }
                     let _ = authViewModel.acceptRide(tripId: tripId)
+                    appState.mapState = .tripAccepted
                 } label: {
                     Text("Accept")
                         .font(.headline)

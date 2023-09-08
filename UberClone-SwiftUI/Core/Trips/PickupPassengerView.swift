@@ -1,34 +1,17 @@
 //
-//  TripAcceptedView.swift
+//  PickupPassengerView.swift
 //  UberClone-SwiftUI
 //
-//  Created by Muhedin Alic on 03.09.23.
+//  Created by Muhedin Alic on 08.09.23.
 //
 
 import SwiftUI
-import CoreLocation
 
-struct TripAcceptedView: View {
+struct PickupPassengerView: View {
     let trip: Trip
     let webSocketViewModel: WebSocketViewModel
     let locationViewModel: LocationSearchViewModel
     
-    @State var timeToArrive = 0
-    
-    
-    func getPassengerToDriverTime() {
-        
-        let fromLocation = LocationManager.shared.userLocation!
-        
-        if let driverData = webSocketViewModel.userLocations.first(where: { $0.id == trip.driverId }) {
-            let toLocation = CLLocationCoordinate2D(latitude: driverData.location.latitude, longitude: driverData.location.longitude)
-            
-            locationViewModel.getDestinationRoute(from: fromLocation, to: toLocation) { route in
-                print("DISTANCE: \(route.distance)")
-                self.timeToArrive = (Int) (route.expectedTravelTime / 60)
-            }
-        }
-    }
     
     var body: some View {
         VStack {
@@ -37,19 +20,19 @@ struct TripAcceptedView: View {
                 .frame(width: 48, height: 6)
                 .padding(.top, 8)
             
-            
-            VStack{
+            VStack {
                 HStack {
-                    Text("Your driver is on the way")
-                        .font(.system(size: 20))
-                        .lineLimit(2)
+                    Text("Go to pickup location")
+                        .font(.headline)
                         .fontWeight(.bold)
-                        .padding(.trailing)
+                        .lineLimit(2)
+                        .multilineTextAlignment(.leading)
+                        .frame(height: 44)
                     
                     Spacer()
                     
                     VStack {
-                        Text("\(timeToArrive)")
+                        Text("10")
                             .bold()
                         
                         Text("min")
@@ -65,6 +48,7 @@ struct TripAcceptedView: View {
                 Divider()
             }
             
+            
             VStack {
                 HStack {
                     Image("male-profile-photo")
@@ -74,7 +58,7 @@ struct TripAcceptedView: View {
                         .clipShape(Circle())
                     
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(trip.driverName ?? "")
+                        Text(trip.passengerName ?? "")
                             .fontWeight(.bold)
                         
                         HStack {
@@ -90,25 +74,17 @@ struct TripAcceptedView: View {
                     
                     Spacer()
                     
-                    VStack(alignment: .center) {
-                        Image(trip.rideType?.imageName ?? "uber-x")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 120, height: 64)
+                    VStack(spacing: 6) {
+                        Text("Earnings")
                         
-                        HStack {
-                            Text(trip.rideType?.description ?? "Uber X")
-                                .font(.system(size: 14, weight: .semibold))
-                                .foregroundColor(Color.theme.primaryTextColor)
-                        }
+                        Text(trip.tripCost.toCurrency())
+                            .font(.system(size: 24, weight: .semibold))
                     }
-                    .padding(.bottom)
                 }
                 
                 Divider()
             }
             .padding()
-            
             
             Button {
                
@@ -120,21 +96,19 @@ struct TripAcceptedView: View {
                     .cornerRadius(10)
                     .foregroundColor(.white)
             }
-            
-            
         }
         .padding(.bottom, 25)
         .background(Color.theme.backgroundColor)
         .cornerRadius(16)
         .shadow(color: Color.theme.secondaryBackgroundColor, radius: 20)
-        .onReceive(webSocketViewModel.$userLocations) { userLocations in
-            getPassengerToDriverTime()
-        }
+//        .onReceive(webSocketViewModel.$userLocations) { userLocations in
+//            getPassengerToDriverTime()
+//        }
     }
 }
 
-//struct TripAcceptedView_Previews: PreviewProvider {
+//struct PickupPassengerView_Previews: PreviewProvider {
 //    static var previews: some View {
-//        TripAcceptedView()
+//        PickupPassengerView()
 //    }
 //}

@@ -60,8 +60,10 @@ struct UberMapViewRepresentable: UIViewRepresentable {
             }
         case .polylineAdded:
             break
+        case .tripAccepted:
+            context.coordinator.addDriverToMap()
         default:
-            print("ensar")
+            break
         }
     }
     
@@ -258,6 +260,38 @@ extension UberMapViewRepresentable {
                 //                anno.coordinate = CLLocationCoordinate2D(latitude: driver.location.latitude, longitude: driver.location.longitude)
                 self.parent.mapView.addAnnotation(anno)
             }
+        }
+        
+        func addDriverToMap() {
+//            let allDriverAnnotations = self.parent.mapView.annotations.filter { annotation in
+//                if let anno = annotation as? DriverAnnotation {
+//                    return true
+//                }
+//                return false
+//            }
+//
+//            let allDriverAnnotationsIds = Set(allDriverAnnotations.map { ($0 as! DriverAnnotation).uid })
+//            let annotationsToRemove = allDriverAnnotations.filter {
+//                allDriverAnnotationsIds.contains(($0 as! DriverAnnotation).uid)
+//            }
+//
+//            self.parent.mapView.removeAnnotations(annotationsToRemove)
+            
+            if let driverData = self.parent.webSocketViewModel.userLocations.first(where: { $0.id == self.parent.webSocketViewModel.trip!.driverId }) {
+                let annotationsToRemove = self.parent.mapView.annotations.filter { annotation in
+                    if let anno = annotation as? DriverAnnotation {
+                        return anno.uid == driverData.id
+                    }
+                    return false
+                }
+                self.parent.mapView.removeAnnotations(annotationsToRemove)
+                
+                let anno = DriverAnnotation(loc: driverData.location, uid: driverData.id)
+                //                anno.subtitle = "driver-\(driver.id)"
+                //                anno.coordinate = CLLocationCoordinate2D(latitude: driver.location.latitude, longitude: driver.location.longitude)
+                self.parent.mapView.addAnnotation(anno)
+            }
+            
         }
     }
 }

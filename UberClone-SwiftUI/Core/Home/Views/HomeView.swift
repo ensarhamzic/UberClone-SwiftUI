@@ -21,7 +21,7 @@ struct HomeView: View {
     @State private var followingUser: Bool = true
     
     @State var routeToPassenger: MKRoute?
-
+    
     
     var body: some View {
         Group {
@@ -72,15 +72,17 @@ struct HomeView: View {
         let fromLocation = LocationManager.shared.userLocation!
         let toLocation = CLLocationCoordinate2D(latitude: trip.pickupLocation.latitude, longitude: trip.pickupLocation.longitude)
         
-            locationViewModel.getDestinationRoute(from: fromLocation, to: toLocation) { route in
-                print("Expected travel time \(route.expectedTravelTime / 60)")
-                print("Distance from pass \(route.distance / 1000)")
-                routeToPass = route
-                self.routeToPassenger = route
-                
-            }
+        locationViewModel.getDestinationRoute(from: fromLocation, to: toLocation) { route in
+            print("Expected travel time \(route.expectedTravelTime / 60)")
+            print("Distance from pass \(route.distance / 1000)")
+            routeToPass = route
+            self.routeToPassenger = route
+            
+        }
         return routeToPass
     }
+    
+    
 }
 
 
@@ -139,7 +141,7 @@ extension HomeView {
                                             DispatchQueue.main.async {
                                                 appState.mapState = .locationSelected
                                             }
-                 
+                                            
                                         }
                                     }
                             }
@@ -170,14 +172,31 @@ extension HomeView {
                     .transition(.move(edge: .bottom))
             }
             
-            if let trip = webSocketViewModel.trip {
-                AcceptTripView(route: $routeToPassenger, wsViewModel: webSocketViewModel, authViewModel: authViewModel)
+            if appState.mapState == .tripRequested && authViewModel.user?.type == .driver {
+                if let trip = webSocketViewModel.trip {
+                        AcceptTripView(route: $routeToPassenger, wsViewModel: webSocketViewModel, authViewModel: authViewModel)
+                            .transition(.move(edge: .bottom))
+                }
+            }
+            
+            
+            if appState.mapState == .tripRequested && authViewModel.user?.type == .passenger {
+                TripLoadingView()
                     .transition(.move(edge: .bottom))
             }
             
-            if appState.mapState == .tripRequested {
-                TripLoadingView()
-                    .transition(.move(edge: .bottom))
+            if appState.mapState == .tripAccepted && authViewModel.user?.type == .passenger {
+                if let trip = webSocketViewModel.trip {
+                    TripAcceptedView(trip: trip, webSocketViewModel: webSocketViewModel, locationViewModel: locationViewModel)
+                        .transition(.move(edge: .bottom))
+                }
+            }
+            
+            if appState.mapState == .tripAccepted && authViewModel.user?.type == .driver {
+                if let trip = webSocketViewModel.trip {
+                    PickupPassengerView(trip: trip, webSocketViewModel: webSocketViewModel, locationViewModel: locationViewModel)
+                        .transition(.move(edge: .bottom))
+                }
             }
         }
         .edgesIgnoringSafeArea(.bottom)

@@ -108,7 +108,7 @@ class WebSocketViewModel: ObservableObject {
                             let dataToDecode = decodedMessage.data.data(using: .utf8)
                             let decodedData = try JSONDecoder().decode(Trip.self, from: dataToDecode!)
                             DispatchQueue.main.async {
-                                print(decodedData)
+                                self.appState.mapState = .tripRequested
                                 self.trip = decodedData
                             }
                         case "rideRequestCancelled":
@@ -121,13 +121,14 @@ class WebSocketViewModel: ObservableObject {
                                 }
                             }
                         case "rideAccepted":
-                            print("RIDE ACCEPTED")
+                            let dataToDecode = decodedMessage.data.data(using: .utf8)
+                            let decodedData = try JSONDecoder().decode(Trip.self, from: dataToDecode!)
                             DispatchQueue.main.async {
-                                self.appState.mapState = .noInput
+                                self.trip = decodedData
+                                self.appState.mapState = .tripAccepted
+                                
+                                print(decodedData)
                             }
-                            print("updated")
-//                            let dataToDecode = decodedMessage.data.data(using: .utf8)
-//                            let decodedData = try JSONDecoder().decode(RideRequestCancelledData.self, from: dataToDecode!)
                         default:
                             break
                         }
