@@ -6,12 +6,63 @@
 //
 
 import SwiftUI
+import CoreLocation
 
 struct PickupPassengerView: View {
-    let trip: Trip
-    let webSocketViewModel: WebSocketViewModel
-    let locationViewModel: LocationSearchViewModel
+    let appState = AppState.shared
+    @State private var timer: Timer?
     
+    let trip: Trip
+    var webSocketViewModel: WebSocketViewModel
+    var locationViewModel: LocationSearchViewModel
+    
+    @State var timeToArrive: Int = 0
+    
+    func getDriverToPassengerRoute() {
+        let fromLocation = LocationManager.shared.userLocation!
+        let toLocation = CLLocationCoordinate2D(latitude: trip.pickupLocation.latitude, longitude: trip.pickupLocation.longitude)
+        
+        locationViewModel.getDestinationRoute(from: fromLocation, to: toLocation) { route in
+            print("KALKULISE SE")
+            DispatchQueue.main.async {
+                self.timeToArrive = (Int) (route.expectedTravelTime / 60)
+            }
+        }
+    }
+    
+    init(trip: Trip, webSocketViewModel: WebSocketViewModel, locationViewModel: LocationSearchViewModel) {
+        print("INICIJALIZACIJA")
+        print("")
+        print("")
+        
+        self.trip = trip
+        self.webSocketViewModel = webSocketViewModel
+        self.locationViewModel = locationViewModel
+    }
+    
+    func configureTimer() {
+//        let timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { tmr in
+//
+//            getDriverToPassengerRoute()
+//
+//            if appState.mapState != .tripAccepted {
+//                    tmr.invalidate()
+//                print("Tajmer je zaustavljen.")
+//            }
+//        }
+        
+        timer = Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { tmr in
+            print("TAJMER SE PALI")
+            getDriverToPassengerRoute()
+        
+            if appState.mapState != .tripAccepted {
+                tmr.invalidate()
+                print("Tajmer je zaustavljen.")
+            }
+        }
+
+    
+    }
     
     var body: some View {
         VStack {
@@ -32,7 +83,7 @@ struct PickupPassengerView: View {
                     Spacer()
                     
                     VStack {
-                        Text("10")
+                        Text("\(timeToArrive)")
                             .bold()
                         
                         Text("min")
@@ -104,6 +155,15 @@ struct PickupPassengerView: View {
 //        .onReceive(webSocketViewModel.$userLocations) { userLocations in
 //            getPassengerToDriverTime()
 //        }
+        .onAppear {
+            if timeToArrive == 0 {
+                getDriverToPassengerRoute()
+            }
+            configureTimer()
+        }
+        .onDisappear {
+            timer?.invalidate()
+        }
     }
 }
 

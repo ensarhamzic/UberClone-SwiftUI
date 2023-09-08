@@ -17,6 +17,8 @@ struct UberMapViewRepresentable: UIViewRepresentable {
     @EnvironmentObject var webSocketViewModel: WebSocketViewModel
     @EnvironmentObject var authViewModel: AuthViewModel
     
+    @State var driverPolylineConfigured = false
+    
     var locationChosen: (_ coordinate: CLLocationCoordinate2D) -> Void
     
     
@@ -61,7 +63,17 @@ struct UberMapViewRepresentable: UIViewRepresentable {
         case .polylineAdded:
             break
         case .tripAccepted:
-            context.coordinator.addDriverToMap()
+            if authViewModel.user?.type == .passenger {
+                context.coordinator.addDriverToMap()
+            } else if !driverPolylineConfigured {
+                DispatchQueue.main.async {
+                    driverPolylineConfigured = true
+                }
+                let coordinate = CLLocationCoordinate2D(latitude: webSocketViewModel.trip?.pickupLocation.latitude ?? 0, longitude: webSocketViewModel.trip?.pickupLocation.longitude ?? 0)
+                
+                context.coordinator.addAndSelectAnnotation(withCoordinate: coordinate)
+                context.coordinator.configureDriverPolyline(withDestinationCoordinate: coordinate)
+            }
         default:
             break
         }
@@ -147,7 +159,7 @@ extension UberMapViewRepresentable {
             
             let region = MKCoordinateRegion(
                 center: userLocation.coordinate,
-                span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+                span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
             )
             self.currentRegion = region
             
@@ -164,7 +176,7 @@ extension UberMapViewRepresentable {
         func centerOnUserLocation() {
             let region = MKCoordinateRegion(
                 center: self.userLocationCoordinate!,
-                span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+                span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
             )
             self.currentRegion = region
             parent.mapView.setRegion(region, animated: true)
@@ -180,6 +192,18 @@ extension UberMapViewRepresentable {
                 let rect = self.parent.mapView.mapRectThatFits(route.polyline.boundingMapRect, edgePadding: .init(top: 64, left: 32, bottom: 500, right: 32))
                 
                 self.parent.mapView.setRegion(MKCoordinateRegion(rect), animated: true)
+            }
+        }
+        
+        func configureDriverPolyline(withDestinationCoordinate coordinate: CLLocationCoordinate2D) {
+            guard let userLocationCoordinate = self.userLocationCoordinate else {return }
+            parent.locationViewModel.getDestinationRoute(from: userLocationCoordinate, to: coordinate) { route in
+                self.parent.mapView.addOverlay(route.polyline)
+                let rect = self.parent.mapView.mapRectThatFits(route.polyline.boundingMapRect, edgePadding: .init(top: 70, left: 32, bottom: 500, right: 32))
+                
+                let region = MKCoordinateRegion(center: userLocationCoordinate, span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005))
+                
+                self.parent.mapView.setRegion(region, animated: true)
             }
         }
         

@@ -115,6 +115,7 @@ extension HomeView {
                         .padding()
                         .opacity(followingUser ? 0.3 : 1)
                         .disabled(followingUser)
+                        .padding(.bottom, appState.mapState == .tripAccepted && authViewModel.user?.type == .driver ? 330 : 0)
                     }
                 }
                 
