@@ -15,6 +15,8 @@ struct PickupPassengerView: View {
     let trip: Trip
     var webSocketViewModel: WebSocketViewModel
     var locationViewModel: LocationSearchViewModel
+
+    @EnvironmentObject var authViewModel: AuthViewModel
     
     @State var timeToArrive: Int = 0
     
@@ -138,7 +140,7 @@ struct PickupPassengerView: View {
             .padding()
             
             Button {
-               
+                let _ = authViewModel.cancelRide(tripId: webSocketViewModel.trip?.tripId ?? "")
             } label: {
                 Text("CANCEL RIDE")
                     .fontWeight(.bold)

@@ -15,6 +15,8 @@ struct TripAcceptedView: View {
     
     @State var timeToArrive = 0
     
+    @EnvironmentObject var authViewModel: AuthViewModel
+    
     
     func getPassengerToDriverTime() {
         
@@ -111,7 +113,7 @@ struct TripAcceptedView: View {
             
             
             Button {
-               
+                let _ = authViewModel.cancelRide(tripId: webSocketViewModel.trip?.tripId ?? "")
             } label: {
                 Text("CANCEL RIDE")
                     .fontWeight(.bold)

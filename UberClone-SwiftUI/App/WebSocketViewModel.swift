@@ -37,6 +37,10 @@ struct RideRequestCancelledData: Codable {
     let tripId: String
 }
 
+struct RideCancelledData: Codable {
+    let tripId: String
+}
+
 
 class WebSocketViewModel: ObservableObject {
     @Published var userLocations: [LocationData] = []
@@ -128,6 +132,16 @@ class WebSocketViewModel: ObservableObject {
                                 self.appState.mapState = .tripAccepted
                                 
                                 print(decodedData)
+                            }
+                        case "rideCancelled":
+                            let dataToDecode = decodedMessage.data.data(using: .utf8)
+                            let decodedData = try JSONDecoder().decode(RideCancelledData.self, from: dataToDecode!)
+                            DispatchQueue.main.async {
+                                guard let tripId = self.trip?.tripId else {return}
+                                if tripId == decodedData.tripId {
+                                    self.trip = nil
+                                    self.appState.mapState = .tripCancelled
+                                }
                             }
                         default:
                             break

@@ -13,6 +13,7 @@ struct MapViewActionButton: View {
     @Binding var showSideMenu: Bool
     @EnvironmentObject var viewModel: LocationSearchViewModel
     @EnvironmentObject var authViewModel: AuthViewModel
+    @EnvironmentObject var webSocketViewModel: WebSocketViewModel
     
     var body: some View {
 //        HStack {
@@ -103,6 +104,9 @@ struct MapViewActionButton: View {
                 }
                 viewModel.selectedUberLocation = nil
                 let _ = authViewModel.cancelRideRequest()
+            case .tripAccepted:
+                viewModel.selectedUberLocation = nil
+                let _ = authViewModel.cancelRide(tripId: webSocketViewModel.trip?.tripId ?? "")
             default: break
             }
         }

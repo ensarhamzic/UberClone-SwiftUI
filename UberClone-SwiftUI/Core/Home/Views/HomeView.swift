@@ -199,6 +199,10 @@ extension HomeView {
                         .transition(.move(edge: .bottom))
                 }
             }
+            
+            if appState.mapState == .tripCancelled {
+                TripCancelledView()
+            }
         }
         .edgesIgnoringSafeArea(.bottom)
         .onReceive(LocationManager.shared.$userLocation) { location in
