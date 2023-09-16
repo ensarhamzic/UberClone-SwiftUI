@@ -49,7 +49,6 @@ struct Spinner: View {
         }
     }
 
-    // MARK: Animation methods
     func animateSpinner(with duration: Double, completion: @escaping (() -> Void)) {
         Timer.scheduledTimer(withTimeInterval: duration, repeats: false) { _ in
             withAnimation(Animation.easeInOut(duration: self.rotationTime)) {
@@ -77,7 +76,6 @@ struct Spinner: View {
     }
 }
 
-// MARK: SpinnerCircle
 struct SpinnerCircle: View {
     var start: CGFloat
     var end: CGFloat

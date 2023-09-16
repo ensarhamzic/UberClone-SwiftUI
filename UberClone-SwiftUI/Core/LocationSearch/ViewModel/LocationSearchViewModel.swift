@@ -18,7 +18,6 @@ enum LocationStatus: Equatable {
 
 class LocationSearchViewModel: NSObject, ObservableObject {
     
-    // MARK: - Properties
     
     @Published private(set) var results = [MKLocalSearchCompletion]()
     @Published var selectedUberLocation: UberLocation?
@@ -35,7 +34,6 @@ class LocationSearchViewModel: NSObject, ObservableObject {
     
     var userLocation: CLLocationCoordinate2D?
     
-    // MARK: - Lifecycle
     
     override init() {
         super.init()
@@ -43,23 +41,6 @@ class LocationSearchViewModel: NSObject, ObservableObject {
         self.searchCompleter.queryFragment = queryFragment
     }
     
-    // MARK: - Helpers
-    
-//    func selectLocation(location: MKLocalSearchCompletion, forConfig config: LocationResultsViewConfig) {
-//        switch config {
-//        case .savedLocations(let option):
-//            uploadSavedLocation(location: location, forOption: option)
-//        case .ride:
-//            self.selectedLocation = location
-//
-//            self.locationSearch(forLocalSearchCompletion: location) { response, error in
-//                guard let item = response?.mapItems.first else { return }
-//
-//                let coordinate = item.placemark.coordinate
-//                self.selectedUberLocation = UberLocation(title: location.title, coordinate: coordinate)
-//            }
-//        }
-//    }
     
     func selectLocation(_ localSearch: MKLocalSearchCompletion) {
         locationSearch(forLocalSearchCompletion: localSearch) { response, error in
@@ -139,32 +120,6 @@ class LocationSearchViewModel: NSObject, ObservableObject {
     }
 }
 
-// MARK: - API
-
-//extension LocationSearchViewModel {
-//    func uploadSavedLocation(location: MKLocalSearchCompletion, forOption option: SavedLocationOptions) {
-//        guard let uid = Auth.auth().currentUser?.uid else { return }
-//
-//        self.locationSearch(forLocalSearchCompletion: location) { response, error in
-//            guard let item = response?.mapItems.first else { return }
-//
-//            let coordinate = item.placemark.coordinate
-//            let title = location.title
-//            let address = location.subtitle
-//
-//            let data: [String: Any] = ["title": title,
-//                                       "address": address,
-//                                       "latitude": coordinate.latitude,
-//                                       "longitude": coordinate.longitude] as [String : Any]
-//
-//            COLLECTION_USERS.document(uid).updateData([option.databaseKey: data])
-//        }
-//    }
-//}
-//
-//// MARK: - MKLocalSearchCompleterDelegate
-//
-//
 extension LocationSearchViewModel: MKLocalSearchCompleterDelegate {
     func completerDidUpdateResults(_ completer: MKLocalSearchCompleter) {
         self.results = completer.results

@@ -44,18 +44,12 @@ struct SaveLocationMapViewRepresentable: UIViewRepresentable {
 extension SaveLocationMapViewRepresentable {
     class MapCoordinator: NSObject, MKMapViewDelegate  {
         
-        // MARK: - Properties
         
         let parent: SaveLocationMapViewRepresentable
         var userLocationCoordinate: CLLocationCoordinate2D?
         
         var currentRegion: MKCoordinateRegion?
-        //        var userLocation: MKUserLocation?
-        //        var didSetVisibleMapRectForTrip = false
-        
-        //        private var drivers = [User]()
-        
-        // MARK: - Lifecycle
+
         
         init(parent: SaveLocationMapViewRepresentable) {
             self.parent = parent
@@ -72,13 +66,11 @@ extension SaveLocationMapViewRepresentable {
             let location = gestureReconizer.location(in: parent.mapView)
             let coordinate = parent.mapView.convert(location,toCoordinateFrom: parent.mapView)
             
-            // Add annotation:
+        
             let annotation = MKPointAnnotation()
             annotation.coordinate = coordinate
             parent.mapTapped(coordinate)
             
-            /* to show only one pin while tapping on map by removing the last.
-             If you want to show multiple pins you can remove this piece of code */
             if parent.mapView.annotations.count > 0 {
                 print("Izbrisane anotacije")
                 parent.mapView.removeAnnotations(parent.mapView.annotations)
@@ -87,21 +79,16 @@ extension SaveLocationMapViewRepresentable {
             parent.mapView.addAnnotation(annotation) // add annotaion pin on the map
         }
         
-        // MARK: - MKMapViewDelegate
         
         func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
             self.userLocationCoordinate = userLocation.coordinate
-            // this will cause mapview to constantly center if user is changing location
-            //            self.userLocation = userLocation
+   
             let region = MKCoordinateRegion(
                 center: userLocation.coordinate,
                 span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
             )
             self.currentRegion = region
-            
-            //            if let user = parent.homeViewModel.user, user.accountType == .driver {
-            //                parent.homeViewModel.updateDriverLocation(withCoordinate: userLocation.coordinate)
-            //            }
+
             
             parent.mapView.setRegion(region, animated: true)
         }

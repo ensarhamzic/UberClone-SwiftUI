@@ -89,19 +89,12 @@ extension UberMapViewRepresentable {
     
     class MapCoordinator: NSObject, MKMapViewDelegate, UIGestureRecognizerDelegate {
         
-        // MARK: - Properties
         
         let parent: UberMapViewRepresentable
         var userLocationCoordinate: CLLocationCoordinate2D?
     
         
         var currentRegion: MKCoordinateRegion?
-        //        var userLocation: MKUserLocation?
-        //        var didSetVisibleMapRectForTrip = false
-        
-        //        private var drivers = [User]()
-        
-        // MARK: - Lifecycle
         
         init(parent: UberMapViewRepresentable) {
             self.parent = parent
@@ -136,18 +129,9 @@ extension UberMapViewRepresentable {
             
             parent.locationChosen(coordinate)
             
-            //            /* to show only one pin while tapping on map by removing the last.
-            //             If you want to show multiple pins you can remove this piece of code */
-            //            if parent.mapView.annotations.count > 0 {
-            //                let randomNumber = Int.random(in: 1...100) // Change the range as needed
-            //                print("Random number:", randomNumber)
-            //                parent.mapView.removeAnnotations(parent.mapView.annotations)
-            //            }
-            //
-            //            parent.mapView.addAnnotation(annotation) // add annotaion pin on the map
+
         }
         
-        // MARK: - MKMapViewDelegate
         
         func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
             self.userLocationCoordinate = userLocation.coordinate
@@ -163,9 +147,7 @@ extension UberMapViewRepresentable {
             )
             self.currentRegion = region
             
-            //            if let user = parent.homeViewModel.user, user.accountType == .driver {
-            //                parent.homeViewModel.updateDriverLocation(withCoordinate: userLocation.coordinate)
-            //            }
+
             
             
             
@@ -246,10 +228,7 @@ extension UberMapViewRepresentable {
             }
             parent.mapView.removeAnnotations(annotationsToRemove)
             parent.mapView.removeOverlays(parent.mapView.overlays)
-            //            if let currentRegion = currentRegion {
-            //                parent.mapView.setRegion(currentRegion, animated: true)
-            //            }
-            // I removed this. This is centering to user location
+
         }
         
         func addDriversToMap(_ drivers: [LocationData]) {
@@ -280,26 +259,13 @@ extension UberMapViewRepresentable {
                 self.parent.mapView.removeAnnotations(annotationsToRemove)
                 
                 let anno = DriverAnnotation(loc: driver.location, uid: driver.id)
-                //                anno.subtitle = "driver-\(driver.id)"
-                //                anno.coordinate = CLLocationCoordinate2D(latitude: driver.location.latitude, longitude: driver.location.longitude)
+
                 self.parent.mapView.addAnnotation(anno)
             }
         }
         
         func addDriverToMap() {
-//            let allDriverAnnotations = self.parent.mapView.annotations.filter { annotation in
-//                if let anno = annotation as? DriverAnnotation {
-//                    return true
-//                }
-//                return false
-//            }
-//
-//            let allDriverAnnotationsIds = Set(allDriverAnnotations.map { ($0 as! DriverAnnotation).uid })
-//            let annotationsToRemove = allDriverAnnotations.filter {
-//                allDriverAnnotationsIds.contains(($0 as! DriverAnnotation).uid)
-//            }
-//
-//            self.parent.mapView.removeAnnotations(annotationsToRemove)
+
             
             if let driverData = self.parent.webSocketViewModel.userLocations.first(where: { $0.id == self.parent.webSocketViewModel.trip!.driverId }) {
                 let annotationsToRemove = self.parent.mapView.annotations.filter { annotation in
@@ -311,8 +277,7 @@ extension UberMapViewRepresentable {
                 self.parent.mapView.removeAnnotations(annotationsToRemove)
                 
                 let anno = DriverAnnotation(loc: driverData.location, uid: driverData.id)
-                //                anno.subtitle = "driver-\(driver.id)"
-                //                anno.coordinate = CLLocationCoordinate2D(latitude: driver.location.latitude, longitude: driver.location.longitude)
+
                 self.parent.mapView.addAnnotation(anno)
             }
             

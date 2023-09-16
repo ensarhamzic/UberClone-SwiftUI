@@ -16,25 +16,6 @@ struct MapViewActionButton: View {
     @EnvironmentObject var webSocketViewModel: WebSocketViewModel
     
     var body: some View {
-//        HStack {
-//            Button {
-//                withAnimation(.spring()) {
-//                    actionForState()
-//                }
-//            } label: {
-//                Image(systemName: imageNameForState(state: state))
-//                    .font(.title2)
-//                    .foregroundColor(.black)
-//                    .padding()
-//                    .background(Color.white)
-//                    .clipShape((Circle()))
-//                    .shadow(color: .black, radius: 5, x: 0, y: 0)
-//            }
-//            .padding(12)
-//            .padding(.top, 32)
-//
-//            Spacer()
-//        }
         Button {
             withAnimation(.spring()) {
                 actionForState(appState.mapState)

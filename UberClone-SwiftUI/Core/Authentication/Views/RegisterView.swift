@@ -72,12 +72,6 @@ struct RegisterView: View {
                                     Button {
                                         userType = .driver
                                         
-//                                        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.2) {
-//                                            withAnimation {
-//                                                proxy.scrollTo(bottomId)
-//                                            }
-//                                        }
-                                        
                                     } label: {
                                         Text("Driver")
                                             .frame(width: 120, height: 40)

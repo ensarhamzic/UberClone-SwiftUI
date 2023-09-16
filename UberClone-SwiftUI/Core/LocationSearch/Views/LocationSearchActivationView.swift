@@ -42,19 +42,7 @@ struct LocationSearchActivationView: View {
                 .frame(maxWidth: .infinity, alignment: .trailing)
 
         
-        
-
-//            Image(systemName: "magnifyingglass")
-//            .imageScale(.small)
-//                .font(.title)
-//                .foregroundColor(.black)
-//                .padding()
-//                .background(.white)
-//                .clipShape(Circle())
-//                .shadow(color: .black, radius: 6)
-//                .frame(maxWidth: .infinity, alignment: .trailing)
-//                .padding(.bottom, 20)
-//                .padding(.trailing, 20)
+    
         
     }
 }
