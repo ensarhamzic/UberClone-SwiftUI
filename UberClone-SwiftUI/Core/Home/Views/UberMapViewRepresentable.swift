@@ -17,7 +17,8 @@ struct UberMapViewRepresentable: UIViewRepresentable {
     @EnvironmentObject var webSocketViewModel: WebSocketViewModel
     @EnvironmentObject var authViewModel: AuthViewModel
     
-    @State var driverPolylineConfigured = false
+    @State var driverPickupPolylineConfigured = false
+    @State var driverDropoffPolylineConfigured = false
     
     var locationChosen: (_ coordinate: CLLocationCoordinate2D) -> Void
     
@@ -27,8 +28,6 @@ struct UberMapViewRepresentable: UIViewRepresentable {
         func innerFunc() -> Void {
             context.coordinator.centerOnUserLocation()
         }
-    
-        
         return innerFunc
             
     }
@@ -52,6 +51,10 @@ struct UberMapViewRepresentable: UIViewRepresentable {
             if authViewModel.user?.type == .passenger {
                 context.coordinator.addDriversToMap(webSocketViewModel.userLocations)
             }
+            DispatchQueue.main.async {
+                driverDropoffPolylineConfigured = false
+                driverPickupPolylineConfigured = false
+            }
             break
         case .searchingForLocation:
             break
@@ -65,14 +68,33 @@ struct UberMapViewRepresentable: UIViewRepresentable {
         case .tripAccepted:
             if authViewModel.user?.type == .passenger {
                 context.coordinator.addDriverToMap()
-            } else if !driverPolylineConfigured {
+            } else if !driverPickupPolylineConfigured {
                 DispatchQueue.main.async {
-                    driverPolylineConfigured = true
+                    driverPickupPolylineConfigured = true
                 }
                 let coordinate = CLLocationCoordinate2D(latitude: webSocketViewModel.trip?.pickupLocation.latitude ?? 0, longitude: webSocketViewModel.trip?.pickupLocation.longitude ?? 0)
                 
                 context.coordinator.addAndSelectAnnotation(withCoordinate: coordinate)
                 context.coordinator.configureDriverPolyline(withDestinationCoordinate: coordinate)
+            }
+        case .tripInProgress:
+            if authViewModel.user?.type == .passenger {
+                context.coordinator.addDriverToMap()
+            } else if authViewModel.user?.type == .driver {
+                DispatchQueue.main.async {
+                    driverPickupPolylineConfigured = false
+                }
+                if !driverDropoffPolylineConfigured {
+                    DispatchQueue.main.async {
+                        driverDropoffPolylineConfigured = true
+                    }
+                    
+                    let coordinate = CLLocationCoordinate2D(latitude: webSocketViewModel.trip?.dropoffLocation.latitude ?? 0, longitude: webSocketViewModel.trip?.dropoffLocation.longitude ?? 0)
+                    
+                    context.coordinator.clearMapViewAndRecenterOnUserLocation()
+                    context.coordinator.addAndSelectAnnotation(withCoordinate: coordinate)
+                    context.coordinator.configureDriverPolyline(withDestinationCoordinate: coordinate)
+                }
             }
         default:
             break

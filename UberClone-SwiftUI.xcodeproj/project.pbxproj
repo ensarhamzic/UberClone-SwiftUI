@@ -30,6 +30,9 @@
 		F11C8FBD2AAB732D00235EE5 /* AcceptedTrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11C8FBC2AAB732D00235EE5 /* AcceptedTrip.swift */; };
 		F11C8FBF2AAB885400235EE5 /* PickupPassengerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11C8FBE2AAB885300235EE5 /* PickupPassengerView.swift */; };
 		F11C8FC12AAC826C00235EE5 /* TripCancelledView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11C8FC02AAC826C00235EE5 /* TripCancelledView.swift */; };
+		F11C8FC32AB6107400235EE5 /* TripInProgressDriverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11C8FC22AB6107400235EE5 /* TripInProgressDriverView.swift */; };
+		F11C8FC52AB6150800235EE5 /* TripInProgressPassengerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11C8FC42AB6150800235EE5 /* TripInProgressPassengerView.swift */; };
+		F11C8FC72AB6411F00235EE5 /* TripCompletedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11C8FC62AB6411F00235EE5 /* TripCompletedView.swift */; };
 		F13590A52A97752100E0E1A9 /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F13590A42A97752100E0E1A9 /* AuthViewModel.swift */; };
 		F13590A82A977E3700E0E1A9 /* Environments.swift in Sources */ = {isa = PBXBuildFile; fileRef = F13590A72A977E3700E0E1A9 /* Environments.swift */; };
 		F13590AA2A97A85D00E0E1A9 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = F13590A92A97A85D00E0E1A9 /* User.swift */; };
@@ -79,6 +82,9 @@
 		F11C8FBC2AAB732D00235EE5 /* AcceptedTrip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcceptedTrip.swift; sourceTree = "<group>"; };
 		F11C8FBE2AAB885300235EE5 /* PickupPassengerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickupPassengerView.swift; sourceTree = "<group>"; };
 		F11C8FC02AAC826C00235EE5 /* TripCancelledView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripCancelledView.swift; sourceTree = "<group>"; };
+		F11C8FC22AB6107400235EE5 /* TripInProgressDriverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripInProgressDriverView.swift; sourceTree = "<group>"; };
+		F11C8FC42AB6150800235EE5 /* TripInProgressPassengerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripInProgressPassengerView.swift; sourceTree = "<group>"; };
+		F11C8FC62AB6411F00235EE5 /* TripCompletedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripCompletedView.swift; sourceTree = "<group>"; };
 		F13590A42A97752100E0E1A9 /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
 		F13590A72A977E3700E0E1A9 /* Environments.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Environments.swift; sourceTree = "<group>"; };
 		F13590A92A97A85D00E0E1A9 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -271,6 +277,9 @@
 				F13590D72AA4F59900E0E1A9 /* TripAcceptedView.swift */,
 				F11C8FBE2AAB885300235EE5 /* PickupPassengerView.swift */,
 				F11C8FC02AAC826C00235EE5 /* TripCancelledView.swift */,
+				F11C8FC22AB6107400235EE5 /* TripInProgressDriverView.swift */,
+				F11C8FC42AB6150800235EE5 /* TripInProgressPassengerView.swift */,
+				F11C8FC62AB6411F00235EE5 /* TripCompletedView.swift */,
 			);
 			path = Trips;
 			sourceTree = "<group>";
@@ -457,6 +466,7 @@
 				F11C67E82A96278F00719C8A /* MapViewState.swift in Sources */,
 				F13590DF2AA8ACD000E0E1A9 /* AppState.swift in Sources */,
 				F13590C02A9A1ED200E0E1A9 /* SavedLocationRowView.swift in Sources */,
+				F11C8FC72AB6411F00235EE5 /* TripCompletedView.swift in Sources */,
 				F13590B72A97DA9D00E0E1A9 /* SideMenuOptionViewModel.swift in Sources */,
 				F13590D22AA1170C00E0E1A9 /* AcceptTripView.swift in Sources */,
 				F13590D42AA11D2400E0E1A9 /* Trip.swift in Sources */,
@@ -465,6 +475,7 @@
 				F13590CC2A9B8DD500E0E1A9 /* DriverAnnotation.swift in Sources */,
 				F11C8FC12AAC826C00235EE5 /* TripCancelledView.swift in Sources */,
 				F11C67E02A9601E200719C8A /* MapViewActionButton.swift in Sources */,
+				F11C8FC52AB6150800235EE5 /* TripInProgressPassengerView.swift in Sources */,
 				F11C67BB2A95F7B300719C8A /* UberClone_SwiftUIApp.swift in Sources */,
 				F11C67FA2A97654800719C8A /* RegisterView.swift in Sources */,
 				F11C8FBD2AAB732D00235EE5 /* AcceptedTrip.swift in Sources */,
@@ -477,6 +488,7 @@
 				F13590C82A9A81FD00E0E1A9 /* LocationShortcutView.swift in Sources */,
 				F11C67DE2A9600D600719C8A /* LocationSearchActivationView.swift in Sources */,
 				F11C67E42A96064400719C8A /* LocationSearchResultCell.swift in Sources */,
+				F11C8FC32AB6107400235EE5 /* TripInProgressDriverView.swift in Sources */,
 				F13590C22A9A1F8800E0E1A9 /* SettingsRowView.swift in Sources */,
 				F11C67F82A97653A00719C8A /* LoginView.swift in Sources */,
 				F13590AE2A97B88700E0E1A9 /* Converters.swift in Sources */,

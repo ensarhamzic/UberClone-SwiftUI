@@ -143,6 +143,16 @@ class WebSocketViewModel: ObservableObject {
                                     self.appState.mapState = .tripCancelled
                                 }
                             }
+                        case "rideStarted":
+                            DispatchQueue.main.async {
+                                print("ride started")
+                                self.appState.mapState = .tripInProgress
+                            }
+                        case "rideCompleted":
+                            DispatchQueue.main.async {
+                                print("ride completed")
+                                self.appState.mapState = .tripCompleted
+                            }
                         default:
                             break
                         }

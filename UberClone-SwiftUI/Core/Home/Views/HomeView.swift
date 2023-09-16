@@ -77,7 +77,6 @@ struct HomeView: View {
             print("Distance from pass \(route.distance / 1000)")
             routeToPass = route
             self.routeToPassenger = route
-            
         }
         return routeToPass
     }
@@ -115,7 +114,7 @@ extension HomeView {
                         .padding()
                         .opacity(followingUser ? 0.3 : 1)
                         .disabled(followingUser)
-                        .padding(.bottom, appState.mapState == .tripAccepted && authViewModel.user?.type == .driver ? 330 : 0)
+                        .padding(.bottom, (appState.mapState == .tripAccepted || appState.mapState == .tripInProgress) ? 375 : 0)
                     }
                 }
                 
@@ -202,6 +201,18 @@ extension HomeView {
             
             if appState.mapState == .tripCancelled {
                 TripCancelledView()
+            }
+            
+            if appState.mapState == .tripInProgress {
+                if authViewModel.user?.type == .driver {
+                    TripInProgressDriverView(locationViewModel: locationViewModel, trip: webSocketViewModel.trip!)
+                } else {
+                    TripInProgressPassengerView(locationViewModel: locationViewModel, trip: webSocketViewModel.trip!)
+                }
+            }
+            
+            if appState.mapState == .tripCompleted {
+                TripCompletedView()
             }
         }
         .edgesIgnoringSafeArea(.bottom)

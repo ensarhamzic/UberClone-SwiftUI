@@ -1,63 +1,58 @@
 //
-//  PickupPassengerView.swift
+//  TripInProgressPassengerView.swift
 //  UberClone-SwiftUI
 //
-//  Created by Muhedin Alic on 08.09.23.
+//  Created by Muhedin Alic on 16.09.23.
 //
 
 import SwiftUI
 import CoreLocation
 
-struct PickupPassengerView: View {
-    let appState = AppState.shared
-    @State private var timer: Timer?
-    
-    let trip: Trip
-    var webSocketViewModel: WebSocketViewModel
-    var locationViewModel: LocationSearchViewModel
-
+struct TripInProgressPassengerView: View {
+    @ObservedObject var appState = AppState.shared
     @EnvironmentObject var authViewModel: AuthViewModel
+    var locationViewModel: LocationSearchViewModel
+    @State private var timer: Timer?
+    let trip: Trip
     
     @State var timeToArrive: Int? = nil
-    @State var distanceToPassenger: Double? = nil
+    @State var distanceToDropoffLocation: Double? = nil
     
-    func getDriverToPassengerRoute() {
-        let fromLocation = LocationManager.shared.userLocation!
-        let toLocation = CLLocationCoordinate2D(latitude: trip.pickupLocation.latitude, longitude: trip.pickupLocation.longitude)
-        
-        locationViewModel.getDestinationRoute(from: fromLocation, to: toLocation) { route in
-            DispatchQueue.main.async {
-                self.timeToArrive = (Int) (route.expectedTravelTime / 60)
-                self.distanceToPassenger = route.distance
-                print("Distance is \(distanceToPassenger ?? 0) meters")
-            }
-        }
-    }
-    
-    func isDriverInPassengerRegion() -> Bool {
-        return (distanceToPassenger ?? 201) <= 200
-    }
-    
-    init(trip: Trip, webSocketViewModel: WebSocketViewModel, locationViewModel: LocationSearchViewModel) {
-        self.trip = trip
-        self.webSocketViewModel = webSocketViewModel
+    init(locationViewModel: LocationSearchViewModel, trip: Trip) {
         self.locationViewModel = locationViewModel
+        self.trip = trip
     }
     
     func configureTimer() {
-        
         timer = Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { tmr in
             print("TAJMER SE PALI")
-            getDriverToPassengerRoute()
+            getRoute()
         
-            if appState.mapState != .tripAccepted {
+            if appState.mapState != .tripInProgress {
                 tmr.invalidate()
                 print("Tajmer je zaustavljen.")
             }
         }
-
-    
     }
+    
+    
+    func getRoute() {
+        let fromLocation = LocationManager.shared.userLocation!
+        let toLocation = CLLocationCoordinate2D(latitude: trip.dropoffLocation.latitude, longitude: trip.dropoffLocation.longitude)
+        
+        locationViewModel.getDestinationRoute(from: fromLocation, to: toLocation) { route in
+            DispatchQueue.main.async {
+                self.timeToArrive = (Int) (route.expectedTravelTime / 60)
+                self.distanceToDropoffLocation = route.distance
+                print("DISTANCE \(route.distance)")
+            }
+        }
+    }
+    
+    func isInDropoffRegion() -> Bool {
+        return (distanceToDropoffLocation ?? 201) <= 200
+    }
+    
     
     var body: some View {
         VStack {
@@ -66,9 +61,10 @@ struct PickupPassengerView: View {
                 .frame(width: 48, height: 6)
                 .padding(.top, 8)
             
+            
             VStack {
                 HStack {
-                    Text("Go to pickup location")
+                    Text("Riding to dropoff location")
                         .font(.headline)
                         .fontWeight(.bold)
                         .lineLimit(2)
@@ -104,7 +100,7 @@ struct PickupPassengerView: View {
                         .clipShape(Circle())
                     
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(trip.passengerName ?? "")
+                        Text(trip.driverName ?? "")
                             .fontWeight(.bold)
                         
                         HStack {
@@ -121,7 +117,7 @@ struct PickupPassengerView: View {
                     Spacer()
                     
                     VStack(spacing: 6) {
-                        Text("Earnings")
+                        Text("Trip cost")
                         
                         Text(trip.tripCost.toCurrency())
                             .font(.system(size: 24, weight: .semibold))
@@ -132,42 +128,19 @@ struct PickupPassengerView: View {
             }
             .padding()
             
-            HStack {
-                Button {
-                    let _ = authViewModel.cancelRide(tripId: webSocketViewModel.trip?.tripId ?? "")
-                } label: {
-                    Text("CANCEL RIDE")
-                        .font(.headline)
-                        .fontWeight(.bold)
-                        .padding()
-                        .frame(width: UIScreen.main.bounds.width / 2 - 32, height: 56)
-                        .background(Color(.systemRed))
-                        .cornerRadius(10)
-                        .foregroundColor(.white)
-                }
-                
-                Spacer()
-                
-                Button {
-                    let _ = authViewModel.pickupPassenger(tripId: webSocketViewModel.trip?.tripId ?? "")
-                    appState.mapState = .tripInProgress
-                } label: {
-                    Text("PICKUP")
-                        .font(.headline)
-                        .fontWeight(.bold)
-                        .padding()
-                        .frame(width: UIScreen.main.bounds.width / 2 - 32, height: 56)
-                        .background(Color(.systemBlue))
-                        .cornerRadius(10)
-                        .foregroundColor(.white)
-                }
-                .disabled(!isDriverInPassengerRegion()) // enable pickup passenger if driver is in 200m radius to passenger
-                .opacity(isDriverInPassengerRegion() ? 1 : 0.3)
+            
+            Button {
+                let _ = authViewModel.cancelRide(tripId: trip.tripId)
+            } label: {
+                Text("CANCEL RIDE")
+                    .fontWeight(.bold)
+                    .frame(width: UIScreen.main.bounds.width - 32, height: 50)
+                    .background(.red)
+                    .cornerRadius(10)
+                    .foregroundColor(.white)
             }
-            .padding(.top)
-            .padding(.horizontal)
-            .padding(.bottom, 25)
-        
+            .disabled(isInDropoffRegion())
+            .opacity(isInDropoffRegion() ? 0.3 : 1)
         }
         .padding(.bottom, 25)
         .background(Color.theme.backgroundColor)
@@ -175,18 +148,20 @@ struct PickupPassengerView: View {
         .shadow(color: Color.theme.secondaryBackgroundColor, radius: 20)
         .onAppear {
             if timeToArrive == nil {
-                getDriverToPassengerRoute()
+                getRoute()
             }
             configureTimer()
         }
         .onDisappear {
             timer?.invalidate()
         }
+        
+        
     }
 }
 
-//struct PickupPassengerView_Previews: PreviewProvider {
+//struct TripInProgressPassengerView_Previews: PreviewProvider {
 //    static var previews: some View {
-//        PickupPassengerView()
+//        TripInProgressPassengerView()
 //    }
 //}

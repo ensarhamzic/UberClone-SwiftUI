@@ -1,13 +1,13 @@
 //
-//  TripCancelledView.swift
+//  TripCompletedView.swift
 //  UberClone-SwiftUI
 //
-//  Created by Muhedin Alic on 09.09.23.
+//  Created by Muhedin Alic on 16.09.23.
 //
 
 import SwiftUI
 
-struct TripCancelledView: View {
+struct TripCompletedView: View {
     @ObservedObject var appState = AppState.shared
     
     var body: some View {
@@ -17,7 +17,7 @@ struct TripCancelledView: View {
                 .frame(width: 48, height: 6)
                 .padding(.top, 8)
             
-            Text("This trip has been cancelled")
+            Text("This trip has been completed")
                 .padding(.vertical)
             
             Button {
@@ -40,8 +40,8 @@ struct TripCancelledView: View {
     }
 }
 
-struct TripCancelledView_Previews: PreviewProvider {
+struct TripCompletedView_Previews: PreviewProvider {
     static var previews: some View {
-        TripCancelledView()
+        TripCompletedView()
     }
 }
