@@ -19,4 +19,5 @@ enum MapViewState: Int {
     case tripCompleted
     case tripCancelled
     case polylineAdded
+    case driverRewarded
 }

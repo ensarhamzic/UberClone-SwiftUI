@@ -45,6 +45,7 @@ struct RideCancelledData: Codable {
 class WebSocketViewModel: ObservableObject {
     @Published var userLocations: [LocationData] = []
     @Published var trip: Trip? = nil
+    @Published var reward: Reward? = nil
     @ObservedObject var appState = AppState.shared
     
     private var webSocketTask: URLSessionWebSocketTask?
@@ -127,6 +128,7 @@ class WebSocketViewModel: ObservableObject {
                         case "rideAccepted":
                             let dataToDecode = decodedMessage.data.data(using: .utf8)
                             let decodedData = try JSONDecoder().decode(Trip.self, from: dataToDecode!)
+                            print(decodedData)
                             DispatchQueue.main.async {
                                 self.trip = decodedData
                                 self.appState.mapState = .tripAccepted
@@ -153,6 +155,15 @@ class WebSocketViewModel: ObservableObject {
                                 print("ride completed")
                                 self.appState.mapState = .tripCompleted
                             }
+                        case "driverRewarded":
+                            let dataToDecode = decodedMessage.data.data(using: .utf8)
+                            let decodedData = try JSONDecoder().decode(Reward.self, from: dataToDecode!)
+                            
+                            DispatchQueue.main.async {
+                                self.appState.mapState = .driverRewarded
+                                self.reward = decodedData
+                            }
+                            
                         default:
                             break
                         }

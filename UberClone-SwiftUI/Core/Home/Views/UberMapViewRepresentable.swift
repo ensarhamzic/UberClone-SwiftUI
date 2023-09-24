@@ -141,6 +141,9 @@ extension UberMapViewRepresentable {
         }
         
         @objc func handleTap(gestureReconizer: UITapGestureRecognizer) {
+            if self.parent.authViewModel.user?.type == .driver {
+                return
+            }
             
             let location = gestureReconizer.location(in: parent.mapView)
             let coordinate = parent.mapView.convert(location,toCoordinateFrom: parent.mapView)
@@ -287,8 +290,6 @@ extension UberMapViewRepresentable {
         }
         
         func addDriverToMap() {
-
-            
             if let driverData = self.parent.webSocketViewModel.userLocations.first(where: { $0.id == self.parent.webSocketViewModel.trip!.driverId }) {
                 let annotationsToRemove = self.parent.mapView.annotations.filter { annotation in
                     if let anno = annotation as? DriverAnnotation {

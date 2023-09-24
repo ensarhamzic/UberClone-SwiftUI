@@ -98,20 +98,8 @@ struct TripInProgressDriverView: View {
                         .frame(width: 80, height: 80)
                         .clipShape(Circle())
                     
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(trip.passengerName ?? "")
-                            .fontWeight(.bold)
-                        
-                        HStack {
-                            Image(systemName: "star.fill")
-                                .foregroundColor(Color(.systemYellow))
-                                .imageScale(.small)
-                            
-                            Text("4.8")
-                                .font(.footnote)
-                                .foregroundColor(.gray)
-                        }
-                    }
+                    Text(trip.passengerName ?? "")
+                        .fontWeight(.bold)
                     
                     Spacer()
                     

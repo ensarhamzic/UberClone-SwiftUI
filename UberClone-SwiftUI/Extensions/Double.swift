@@ -33,4 +33,13 @@ extension Double {
     func distanceInKilometersString() -> String {
         return distanceFormatter.string(for: self / 1000) ?? ""
     }
+    
+    func toFixedDecimalPlaces(decimalPlaces: Int) -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.usesGroupingSeparator = true
+        formatter.minimumFractionDigits = decimalPlaces
+        formatter.maximumFractionDigits = decimalPlaces
+        return formatter.string(for: self) ?? "0.00"
+    }
 }

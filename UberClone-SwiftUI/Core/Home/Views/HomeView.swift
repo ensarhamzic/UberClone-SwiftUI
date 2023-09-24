@@ -212,7 +212,11 @@ extension HomeView {
             }
             
             if appState.mapState == .tripCompleted {
-                TripCompletedView()
+                TripCompletedView(trip: webSocketViewModel.trip!)
+            }
+            
+            if appState.mapState == .driverRewarded {
+                DriverRewardedView(reward: webSocketViewModel.reward!)
             }
         }
         .edgesIgnoringSafeArea(.bottom)

@@ -23,4 +23,5 @@ struct Trip: Codable, Identifiable, Equatable {
     let driverId: String?
     let driverName: String?
     let rideType: RideType?
+    let driverRating: Double?
 }

@@ -108,7 +108,7 @@ struct TripInProgressPassengerView: View {
                                 .foregroundColor(Color(.systemYellow))
                                 .imageScale(.small)
                             
-                            Text("4.8")
+                            Text(trip.driverRating?.toFixedDecimalPlaces(decimalPlaces: 2) ?? "0.00")
                                 .font(.footnote)
                                 .foregroundColor(.gray)
                         }
